@@ -1,4 +1,5 @@
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -220,9 +221,9 @@ class BookSearchHelper{
 
 
 
-List<Map<String,dynamic>> _parse(Map map){
-  String response = map['response'];
-  String baseUrl = map['baseUrl'];
+FutureOr<dynamic> _parse(Map<String, String?> map, TypeSendPort<dynamic> sendPort){
+  String response = map['response']!;
+  String baseUrl = map['baseUrl']!;
   BookSearchRuleBean ruleBean = BookSearchRuleBean();
   ruleBean.bookList = map['rule_bookList'];
   ruleBean.name = map['rule_name'];

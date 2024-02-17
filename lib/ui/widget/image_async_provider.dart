@@ -30,7 +30,7 @@ class NetworkImageWithoutAuth extends ImageProvider<NetworkImageWithoutAuth> {
 
   @override
   ImageStreamCompleter load(
-      NetworkImageWithoutAuth key, DecoderCallback decode) {
+      NetworkImageWithoutAuth key) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key),
       scale: key.scale,
@@ -54,7 +54,7 @@ class NetworkImageWithoutAuth extends ImageProvider<NetworkImageWithoutAuth> {
     if (bytes.lengthInBytes == 0)
       throw Exception('NetworkImage is an empty file');
 
-    return PaintingBinding.instance!.instantiateImageCodec(bytes);
+    return PaintingBinding.instance!.instantiateImageCodecWithSize(await ImmutableBuffer.fromUint8List(bytes));
   }
 
   @override

@@ -100,24 +100,24 @@ class _PageSourceAddState extends State<PageSourceAdd> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        FlatButton(onPressed: (){
+        TextButton(onPressed: (){
           if(_textEditingController.text.trim().isEmpty){
             _showHelpDialog(context);
           }else{
             _fromNetWork();
           }
         },
-          child: Text('导入',style: TextStyle(color: theme.accentColor),),
-          color: theme.primaryColorDark,
-          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+          child: Text('导入',style: TextStyle(color: theme.colorScheme.secondary),),
+          style: ButtonStyle(shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0))), backgroundColor: MaterialStatePropertyAll(theme.primaryColorDark)),
         ),
         HSpace(8),
-        FlatButton(onPressed: (){
+        TextButton(onPressed: (){
           _fromClipboard();
         },
-          child: Text('粘贴板导入',style: TextStyle(color: theme.accentColor),),
-          color: theme.primaryColorDark,
-          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+          child: Text('粘贴板导入',style: TextStyle(color: theme.colorScheme.secondary),),
+          style: ButtonStyle(
+            shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),),
+            backgroundColor: MaterialStatePropertyAll(theme.primaryColorDark))
         ),
       ],
     );

@@ -32,10 +32,9 @@ dependencies:
   # 解析库
   reader_parser2:
     git:
-      url: git@github.com:huage2580/reader_parser2.git
+      url: https://github.com/linker-junhao/reader_parser2.git
       ref: master
-
-  provider: ^4.3.2+2
+  provider: ^6.1.1
   #数据库
   sqflite: ^2.0.0+3
   #网络请求
@@ -57,7 +56,9 @@ dependencies:
   #webview 只支持mobile
   webview_flutter: ^2.1.1
   #扩展的图片，用来支持本地缓存
-  extended_image: ^4.0.0
+  extended_image: ^8.2.0
+  flutter_test:
+    sdk: flutter
 
 dev_dependencies:
   sqflite_common_ffi:

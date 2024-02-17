@@ -51,7 +51,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
         // ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: const Text('确定'),
           onPressed: () {
             Navigator.of(context).pop(pickerColor);

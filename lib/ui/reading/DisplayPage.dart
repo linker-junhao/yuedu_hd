@@ -56,7 +56,7 @@ class DisplayPage extends StatelessWidget{
         children: [
           Text('加载失败/(ㄒoㄒ)/~~\n$errorMsg',style: TextStyle(color: Color(config.textColor)),maxLines: 6,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center,),
           VSpace(20),
-          RaisedButton(onPressed: (){
+          ElevatedButton(onPressed: (){
             ReloadEvent.getInstance().reload(viewPageIndex!);
           },child: Text('重新加载'),)
         ],

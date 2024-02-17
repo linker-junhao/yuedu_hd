@@ -72,7 +72,7 @@ class WheelScroll4Desktop extends StatelessWidget{
   }
 
   FixedScrollMetrics _makeMetrics(){
-    return FixedScrollMetrics(minScrollExtent: 0, maxScrollExtent: 0, pixels: 0, viewportDimension: scrollController.position.viewportDimension, axisDirection: AxisDirection.down);
+    return FixedScrollMetrics(minScrollExtent: 0, maxScrollExtent: 0, pixels: 0, viewportDimension: scrollController.position.viewportDimension, axisDirection: AxisDirection.down, devicePixelRatio: 3.0);
   }
 
 

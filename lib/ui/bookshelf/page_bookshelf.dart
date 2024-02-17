@@ -333,7 +333,7 @@ class _PageBookShelfState extends State<PageBookShelf>
   }
 
   void _showDelete(BuildContext context, BookShelfBean bean) {
-    Scaffold.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Row(
         children: <Widget>[
           Icon(

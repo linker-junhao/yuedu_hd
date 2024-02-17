@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       builder: BotToastInit(), //1. call BotToastInit
       navigatorObservers: [BotToastNavigatorObserver()],
       navigatorKey: YDRouter.mainRouter,
-      title: '三目阅读',
+      title: 'IDX READ',
       theme: ThemeData(
         // This is the theme of your application.
         primaryColor: YColors.primary,
@@ -51,7 +51,8 @@ class MyApp extends StatelessWidget {
         hintColor: YColors.text_hint,
         scaffoldBackgroundColor: YColors.background,
         canvasColor: YColors.background_input,
-        accentColor: YColors.text_btn_color,
+        colorScheme: ColorScheme.fromSwatch()
+            .copyWith(secondary: YColors.text_btn_color),
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.

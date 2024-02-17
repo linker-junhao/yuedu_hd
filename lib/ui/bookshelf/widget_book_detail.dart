@@ -129,7 +129,7 @@ class BookDetailState extends State<BookDetailWidget> {
                         Expanded(
                             child: SizedBox(
                                 height: 50,
-                                child: FlatButton(
+                                child: TextButton(
                                     onPressed: () async{
                                       await DatabaseHelper().addToBookShelf(widget.bookId);
                                       setState(() {
@@ -137,20 +137,19 @@ class BookDetailState extends State<BookDetailWidget> {
                                       });
                                     },
                                     child: Text(bookDetail!.inbookShelf == 0?'加入书架':'已在书架'),
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap))),
+                                    style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap)
+                                ))),
                         Expanded(
                             child: SizedBox(
                                 height: 50,
-                                child: FlatButton(
+                                child: TextButton(
                                     onPressed: () {
                                       YDRouter.mainRouter.currentState?.pushNamed(YDRouter.READING_PAGE,arguments: {'bookId':bookDetail!.id});
                                     },
                                     child: Text('开始阅读'),
-                                    color: theme.primaryColor,
-                                    textColor: theme.canvasColor,
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap))),
+                                    style: ButtonStyle(
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap
+                                    )))),
                       ],
                     ),
                   ),
@@ -184,7 +183,7 @@ class BookDetailState extends State<BookDetailWidget> {
                 borderRadius: BorderRadius.all(Radius.circular(2))),
             child: Text(
               tag,
-              style: TextStyle(color: theme.accentColor, fontSize: 13),
+              style: TextStyle(color: theme.colorScheme.secondary, fontSize: 13),
             ),
           )
       ],
@@ -217,9 +216,12 @@ class BookDetailState extends State<BookDetailWidget> {
                   Icon(Icons.explore_outlined),
                   HSpace(8),
                   Expanded(child: Text('来源: ${bookDetail!.sourceBean!.bookSourceName}',style: theme.textTheme.headline6,maxLines: 1,overflow: TextOverflow.ellipsis,)),
-                  SizedBox(height: 26,width: 60,child: FlatButton(onPressed: (){
+                  SizedBox(height: 26,width: 60,child: TextButton(onPressed: (){
                     _showSelectSource(context);
-                  }, child: Text('换源'), materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,color: theme.primaryColor,textColor: theme.canvasColor,)),
+                  },
+                  child: Text('换源', style: TextStyle(color: theme.canvasColor),),
+                  style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                  )),
                 ],
               ),
             ),
@@ -240,10 +242,16 @@ class BookDetailState extends State<BookDetailWidget> {
                   Icon(CupertinoIcons.book_circle),
                   HSpace(8),
                   Expanded(child: Text('目录: $firstChapter',style: theme.textTheme.subtitle1,maxLines: 1,overflow: TextOverflow.ellipsis,)),
-                  SizedBox(height: 26,child: FlatButton(onPressed: (){
+                  SizedBox(height: 26,child: TextButton(onPressed: (){
                     _showChapters(context);
-                  }, child: Text('查看目录'), materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,color: theme.primaryColor,textColor: theme.canvasColor,)),
-
+                  },
+                  child: Text('查看目录', style: TextStyle(
+                    color: theme.canvasColor
+                  ),),
+                  style: ButtonStyle(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    backgroundColor: MaterialStateProperty.all(theme.primaryColor)
+                  ),)),
                 ],
               ),
             ),

@@ -199,7 +199,7 @@ class _PageReadingState extends State<PageReading> {
                     alignment: Alignment.centerLeft,
                     child: IconButton(
                         icon: Icon(Icons.close),
-                        color: theme.accentColor,
+                        color: theme.colorScheme.secondary,
                         iconSize: 28,
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -215,7 +215,7 @@ class _PageReadingState extends State<PageReading> {
                         children: [
                           IconButton(
                               icon: Icon(Icons.chevron_left_outlined,
-                                  color: theme.accentColor),
+                                  color: theme.colorScheme.secondary),
                               onPressed: () {
                                 _previousChapter();
                               }),
@@ -226,7 +226,7 @@ class _PageReadingState extends State<PageReading> {
                              child: Text(
                              currChapterName ?? '加载中...',
                              style: TextStyle(
-                             color: theme.accentColor, fontSize: 20),
+                             color: theme.colorScheme.secondary, fontSize: 20),
                              maxLines: 1,
                              overflow: TextOverflow.ellipsis,
                              ));
@@ -234,7 +234,7 @@ class _PageReadingState extends State<PageReading> {
                           ),
                           IconButton(
                               icon: Icon(Icons.chevron_right_outlined,
-                                  color: theme.accentColor),
+                                  color: theme.colorScheme.secondary),
                               onPressed: () {
                                 _nextChapter();
                               }),
@@ -249,7 +249,7 @@ class _PageReadingState extends State<PageReading> {
 
                         IconButton(
                             icon: Icon(CupertinoIcons.repeat,
-                                color: theme.accentColor),
+                                color: theme.colorScheme.secondary),
                             onPressed: () {
                               _showSourceSelectDialog(context);
                             }),
@@ -289,7 +289,7 @@ class _PageReadingState extends State<PageReading> {
                           child: IgnorePointer(
                             child: IconButton(
                                 icon: Icon(Icons.cloud_download_outlined,
-                                    color: theme.accentColor),
+                                    color: theme.colorScheme.secondary),
                                 onPressed: () {
                                   // BookDownloader.getInstance().startDownload(bookId);
                                   // BotToast.showText(text:"开始缓存");
@@ -299,13 +299,13 @@ class _PageReadingState extends State<PageReading> {
                         IconButton(
                             key: _styleMenuKey,
                             icon: Icon(Icons.font_download_outlined,
-                                color: theme.accentColor),
+                                color: theme.colorScheme.secondary),
                             onPressed: () {
                               _showStyleMenu(context);
                             }),
                         IconButton(
                             icon:
-                                Icon(Icons.menu_book, color: theme.accentColor),
+                                Icon(Icons.menu_book, color: theme.colorScheme.secondary),
                             onPressed: () {
                               _scaffoldKey.currentState!.openEndDrawer();
                             }),
