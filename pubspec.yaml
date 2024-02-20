@@ -31,9 +31,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   # 解析库
   reader_parser2:
-    git:
-      url: https://github.com/linker-junhao/reader_parser2.git
-      ref: master
+    path: /Users/kuangjunhao/project/reader_parser2
   provider: ^6.1.1
   #数据库
   sqflite: ^2.0.0+3

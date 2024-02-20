@@ -10,20 +10,19 @@ import 'package:yuedu_hd/ui/bookshelf/widget_book_detail.dart';
 import 'package:yuedu_hd/ui/widget/image_async.dart';
 import 'package:yuedu_hd/ui/widget/space.dart';
 
-class PageAddBook extends StatefulWidget{
+class PageAddBook extends StatefulWidget {
   @override
   _PageAddBookState createState() => _PageAddBookState();
 }
 
-class _PageAddBookState extends State<PageAddBook>{
-
+class _PageAddBookState extends State<PageAddBook> {
   TextEditingController _searchController = TextEditingController();
   var _searchHelper = BookSearchHelper.getInstance();
   bool _canStop = false;
 
   List<BookInfoBean> _searchResultList = [];
 
-  var _selectBookId = -1;//5 for test,default -1
+  var _selectBookId = -1; //5 for test,default -1
   var isLandscape = false;
 
   var _canPostUpdateUI = true;
@@ -33,7 +32,6 @@ class _PageAddBookState extends State<PageAddBook>{
     //更新UI的间隔至少要两秒
     super.initState();
   }
-
 
   @override
   void dispose() {
@@ -48,13 +46,15 @@ class _PageAddBookState extends State<PageAddBook>{
     isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: OrientationBuilder( builder: (context,orientation){
-        if(isLandscape){
-          return _buildPageLandscape(theme, context);
-        }else{
-          return _buildPagePortrait(theme, context);
-        }
-      },),
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          if (isLandscape) {
+            return _buildPageLandscape(theme, context);
+          } else {
+            return _buildPagePortrait(theme, context);
+          }
+        },
+      ),
     );
   }
 
@@ -71,15 +71,25 @@ class _PageAddBookState extends State<PageAddBook>{
                     margin: EdgeInsets.only(top: 20),
                     child: Row(
                       children: [
-                        IconButton(icon: Icon(CupertinoIcons.back,color: theme.primaryColor,), onPressed: (){
-                          Navigator.of(context).pop();
-                        }),
+                        IconButton(
+                            icon: Icon(
+                              CupertinoIcons.back,
+                              color: theme.primaryColor,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            }),
                         Expanded(child: _buildSearch(theme)),
                         HSpace(8),
                       ],
                     ),
                   ),
-                  Visibility(visible: _canStop,child: LinearProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColorLight),)),
+                  Visibility(
+                      visible: _canStop,
+                      child: LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            theme.primaryColorLight),
+                      )),
                   Expanded(child: _buildSearchList(context)),
                 ],
               ),
@@ -87,16 +97,24 @@ class _PageAddBookState extends State<PageAddBook>{
                 alignment: Alignment.bottomRight,
                 child: Visibility(
                   visible: _canStop,
-                  child: FloatingActionButton(onPressed: (){
-                    _searchHelper.cancelSearch('test');
-                    BotToast.showText(text:"请等待线程结束...");
-                  },child: Icon(Icons.stop),backgroundColor: theme.primaryColor,foregroundColor: theme.canvasColor,),
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      _searchHelper.cancelSearch('test');
+                      BotToast.showText(text: "请等待线程结束...");
+                    },
+                    child: Icon(Icons.stop),
+                    backgroundColor: theme.primaryColor,
+                    foregroundColor: theme.canvasColor,
+                  ),
                 ),
               ),
             ],
           ),
         ),
-        VerticalDivider(width: 0.5,thickness: 0.5,),
+        VerticalDivider(
+          width: 0.5,
+          thickness: 0.5,
+        ),
         Expanded(child: BookDetailWidget(_selectBookId)),
       ],
     );
@@ -113,15 +131,25 @@ class _PageAddBookState extends State<PageAddBook>{
                   margin: EdgeInsets.only(top: 20),
                   child: Row(
                     children: [
-                      IconButton(icon: Icon(CupertinoIcons.back,color: theme.primaryColor,), onPressed: (){
-                        Navigator.of(context).pop();
-                      }),
+                      IconButton(
+                          icon: Icon(
+                            CupertinoIcons.back,
+                            color: theme.primaryColor,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }),
                       Expanded(child: _buildSearch(theme)),
                       HSpace(8),
                     ],
                   ),
                 ),
-                Visibility(visible: _canStop,child: LinearProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColorLight),)),
+                Visibility(
+                    visible: _canStop,
+                    child: LinearProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          theme.primaryColorLight),
+                    )),
                 Expanded(child: _buildSearchList(context)),
               ],
             ),
@@ -131,25 +159,34 @@ class _PageAddBookState extends State<PageAddBook>{
                 visible: _canStop,
                 child: Container(
                   margin: EdgeInsets.all(8),
-                  child: FloatingActionButton(onPressed: (){
-                    _searchHelper.cancelSearch('test');
-                    BotToast.showText(text:"请等待线程结束...");
-                  },child: Icon(Icons.stop),backgroundColor: theme.primaryColor,foregroundColor: theme.canvasColor,),
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      _searchHelper.cancelSearch('test');
+                      BotToast.showText(text: "请等待线程结束...");
+                    },
+                    child: Icon(Icons.stop),
+                    backgroundColor: theme.primaryColor,
+                    foregroundColor: theme.canvasColor,
+                  ),
                 ),
               ),
             ),
           ],
         ),
-        Visibility(visible: _selectBookId !=-1,child: Container(color: theme.backgroundColor,child: BookDetailWidget(_selectBookId,backClick: (){
-          _selectBookId = -1;
-          setState(() {
-
-          });
-        },))),
+        Visibility(
+            visible: _selectBookId != -1,
+            child: Container(
+                color: theme.backgroundColor,
+                child: BookDetailWidget(
+                  _selectBookId,
+                  backClick: () {
+                    _selectBookId = -1;
+                    setState(() {});
+                  },
+                ))),
       ],
     );
   }
-
 
   Container _buildSearch(ThemeData theme) {
     return Container(
@@ -166,20 +203,18 @@ class _PageAddBookState extends State<PageAddBook>{
             child: TextField(
               controller: _searchController,
               textInputAction: TextInputAction.search,
-              onSubmitted: (s){
+              onSubmitted: (s) {
                 _searchKey();
               },
-              onChanged: (s){
-                setState(() {
-
-                });
+              onChanged: (s) {
+                setState(() {});
               },
               autofocus: false,
               maxLines: 1,
               decoration: InputDecoration(
                 hintText: '输入书名或作者 搜索书籍',
                 prefixIconConstraints:
-                BoxConstraints(minWidth: 24, maxHeight: 24),
+                    BoxConstraints(minWidth: 24, maxHeight: 24),
                 prefixIcon: Icon(
                   Icons.search_outlined,
                   color: theme.hintColor,
@@ -194,9 +229,7 @@ class _PageAddBookState extends State<PageAddBook>{
             child: GestureDetector(
               onTap: () {
                 _searchController.clear();
-                setState(() {
-
-                });
+                setState(() {});
               },
               child: Icon(
                 CupertinoIcons.clear_circled_solid,
@@ -210,54 +243,59 @@ class _PageAddBookState extends State<PageAddBook>{
     );
   }
 
-  Widget _buildSearchList(BuildContext context){
+  Widget _buildSearchList(BuildContext context) {
     return Container(
       child: MediaQuery.removePadding(
         removeTop: true,
         context: context,
         child: CupertinoScrollbar(
-          child: ListView.separated(itemBuilder: (ctx,index){
-            return _buildItem(ctx,_searchResultList[index]);
-          }, separatorBuilder: (c,i)=>Divider(height: 0.5,thickness: 0.5,), itemCount: min(30, _searchResultList.length)),
+          child: ListView.separated(
+              itemBuilder: (ctx, index) {
+                return _buildItem(ctx, _searchResultList[index]);
+              },
+              separatorBuilder: (c, i) => Divider(
+                    height: 0.5,
+                    thickness: 0.5,
+                  ),
+              itemCount: min(30, _searchResultList.length)),
         ),
       ),
     );
   }
 
-
   Widget _buildItem(BuildContext ctx, BookInfoBean infoBean) {
     var theme = Theme.of(ctx);
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         _selectBookId = infoBean.id;
         //终止搜索
         _searchHelper.cancelSearch('test');
-        setState(() {
-
-        });
+        setState(() {});
       },
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          // color: theme.cardColor,
-        ),
+            // color: theme.cardColor,
+            ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               color: Colors.grey,
-              child: SizedBox(height: 100,width: 80,child:
-              ExtendedImage.network(
-                infoBean.coverUrl!,
-                width: 80,
+              child: SizedBox(
                 height: 100,
-                fit: BoxFit.fill,
-                cache: true,
-                borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                //cancelToken: cancellationToken,
-              ),
-              // FadeInImageWithoutAuth.network(infoBean.coverUrl!,
+                width: 80,
+                child: ExtendedImage.network(
+                  infoBean.coverUrl!,
+                  width: 80,
+                  height: 100,
+                  fit: BoxFit.fill,
+                  cache: true,
+                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  //cancelToken: cancellationToken,
+                ),
+                // FadeInImageWithoutAuth.network(infoBean.coverUrl!,
                 // loadingBuilder: (BuildContext context, Widget child,
                 //     ImageChunkEvent? loadingProgress) {
                 //   if (loadingProgress == null) return child;
@@ -276,18 +314,30 @@ class _PageAddBookState extends State<PageAddBook>{
                 //     color: Colors.grey,
                 //   );
                 // },
-              // )
-            ),
+                // )
+              ),
             ),
             HSpace(8),
-            Expanded(child: Column(
+            Expanded(
+                child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(infoBean.name!,style: TextStyle(fontWeight: FontWeight.bold,fontSize: theme.textTheme.subtitle1!.fontSize),),
+                Text(
+                  infoBean.name!,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: theme.textTheme.subtitle1!.fontSize),
+                ),
                 Text(infoBean.author!),
-                Text('${infoBean.sourceBean!.bookSourceName}等${infoBean.sourceCount}个书源'),
-                Text(infoBean.intro??'没有简介内容',maxLines: 3,overflow: TextOverflow.ellipsis,softWrap: true,)
+                Text(
+                    '${infoBean.sourceBean!.bookSourceName}等${infoBean.sourceCount}个书源'),
+                Text(
+                  infoBean.intro ?? '没有简介内容',
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: true,
+                )
               ],
             )),
           ],
@@ -296,32 +346,36 @@ class _PageAddBookState extends State<PageAddBook>{
     );
   }
 
-  dynamic _searchKey() async{
+  dynamic _searchKey() async {
     _searchResultList.clear();
     setState(() {
       _selectBookId = -1;
       _canStop = true;
     });
-    var result = await _searchHelper.searchBookFromEnabledSource(_searchController.text, 'test',onBookSearch: (book) async{
+    var result = await _searchHelper.searchBookFromEnabledSource(
+        _searchController.text, 'test', onBookSearch: (book) async {
       var temp = book;
-      if(_searchResultList.contains(book)){
+      if (_searchResultList.contains(book)) {
         var index = _searchResultList.indexOf(book);
         temp = _searchResultList[index];
-        if(temp.intro==null || temp.intro!.isEmpty){//填充简介
+        if (temp.intro == null || temp.intro!.isEmpty) {
+          //填充简介
           temp.intro = book.intro;
         }
-      }else{
-        if(_searchResultList.length < 200){//不重复结果超过200本书，不继续显示
+      } else {
+        if (_searchResultList.length < 200) {
+          //不重复结果超过200本书，不继续显示
           _searchResultList.add(book);
         }
       }
       temp.sourceCount += 1;
-    },updateList: (){
+    }, updateList: () {
       //按书源数量排序
       _wantUpdateList();
     });
-    if(_searchResultList.isEmpty){
-      BotToast.showText(text: '搜索失败，请确认添加并启用书源,检查网络和搜索关键字');
+    if (_searchResultList.isEmpty) {
+      BotToast.showText(
+          text: '搜索失败，请确认添加并启用书源,检查网络和搜索关键字', duration: Duration(seconds: 2));
     }
     setState(() {
       _canStop = false;
@@ -329,17 +383,18 @@ class _PageAddBookState extends State<PageAddBook>{
   }
 
   //控制UI更新的间隔，IOS频繁更新UI特别卡顿
-  void _wantUpdateList(){
-    if(!_canPostUpdateUI){
+  void _wantUpdateList() {
+    if (!_canPostUpdateUI) {
       return;
     }
     _canPostUpdateUI = false;
-    _searchResultList.sort((a,b){return b.sourceCount.compareTo(a.sourceCount);});
-    Future.delayed(Duration(milliseconds: 500),(){
-      setState(() {
-
-      });
-    }).whenComplete((){_canPostUpdateUI = true;}
-    );
+    _searchResultList.sort((a, b) {
+      return b.sourceCount.compareTo(a.sourceCount);
+    });
+    Future.delayed(Duration(milliseconds: 500), () {
+      setState(() {});
+    }).whenComplete(() {
+      _canPostUpdateUI = true;
+    });
   }
 }

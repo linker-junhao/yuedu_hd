@@ -47,7 +47,7 @@ class _StateSourceList extends State<PageSourceList> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        padding: EdgeInsets.all(isLandscape?20:4),
+        padding: EdgeInsets.all(isLandscape ? 20 : 4),
         child: Column(
           children: [
             Row(
@@ -102,10 +102,8 @@ class _StateSourceList extends State<PageSourceList> {
             children: [
               HSpace(60),
               Text('名称/分组'),
-              if(isLandscape)
-                HSpace(140),
-              if(isLandscape)
-                Text('网站源'),
+              if (isLandscape) HSpace(140),
+              if (isLandscape) Text('网站源'),
               Spacer(),
               Text('启用'),
               HSpace(20),
@@ -143,7 +141,7 @@ class _StateSourceList extends State<PageSourceList> {
 
   Widget _buildBottomBar(BuildContext context) {
     var theme = Theme.of(context);
-    if(isVerifyProgress){
+    if (isVerifyProgress) {
       return Row(
         children: [
           Text('（校验中...失效书源会被禁用）$verifyHint'),
@@ -157,7 +155,6 @@ class _StateSourceList extends State<PageSourceList> {
         ],
       );
     }
-
 
     return Row(
       children: [
@@ -179,14 +176,16 @@ class _StateSourceList extends State<PageSourceList> {
           child: Text('反选'),
         ),
         HSpace(8),
-        if(isLandscape)
+        if (isLandscape)
           OutlinedButton(
-            onPressed: () {_deleteSelect();},
+            onPressed: () {
+              _deleteSelect();
+            },
             child: Text('删除'),
           ),
         PopupMenuButton(
-            onSelected: (k){
-              switch(k){
+            onSelected: (k) {
+              switch (k) {
                 case 0:
                   _stateSelect(true);
                   break;
@@ -211,15 +210,31 @@ class _StateSourceList extends State<PageSourceList> {
             offset: Offset(0, -180),
             itemBuilder: (ctx) {
               return [
-                PopupMenuItem(child: Text('启用所选'),value: 0,),
-                PopupMenuItem(child: Text('禁用所选'),value: 1,),
-                PopupMenuItem(child: Text('校验所选'),value: 2,),
-                if(!isLandscape)
-                  PopupMenuItem(child: Text('删除所选'),value: 3,),
-                PopupMenuItem(child: Text('选择所有禁用'),value: 4,),
-                PopupMenuItem(child: Text('选择所有启用'),value: 5,),
-
-
+                PopupMenuItem(
+                  child: Text('启用所选'),
+                  value: 0,
+                ),
+                PopupMenuItem(
+                  child: Text('禁用所选'),
+                  value: 1,
+                ),
+                PopupMenuItem(
+                  child: Text('校验所选'),
+                  value: 2,
+                ),
+                if (!isLandscape)
+                  PopupMenuItem(
+                    child: Text('删除所选'),
+                    value: 3,
+                  ),
+                PopupMenuItem(
+                  child: Text('选择所有禁用'),
+                  value: 4,
+                ),
+                PopupMenuItem(
+                  child: Text('选择所有启用'),
+                  value: 5,
+                ),
               ];
             }),
       ],
@@ -238,7 +253,7 @@ class _StateSourceList extends State<PageSourceList> {
   Container _buildSearch(ThemeData theme) {
     return Container(
       height: 40,
-      width: isLandscape?300:220,
+      width: isLandscape ? 300 : 220,
       padding: EdgeInsets.only(left: 8, right: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -250,7 +265,7 @@ class _StateSourceList extends State<PageSourceList> {
             child: TextField(
               controller: _searchController,
               textInputAction: TextInputAction.search,
-              onSubmitted: (s){
+              onSubmitted: (s) {
                 _fetchListAndUpdate(s);
               },
               autofocus: false,
@@ -289,89 +304,92 @@ class _StateSourceList extends State<PageSourceList> {
 
   Widget _buildSourceItem(BuildContext context, BookSourceBean bean) {
     var theme = Theme.of(context);
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTapDown: (e){
-        _showItemMenu(context,bean.id!,e.globalPosition);
-      },
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Checkbox(
-            value: bean.localSelect,
-            onChanged: (b) {
-              setState(() {
-                _selectCount += b! ? 1 : -1;
-                bean.localSelect = b;
-              });
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Checkbox(
+          value: bean.localSelect,
+          onChanged: (b) {
+            setState(() {
+              _selectCount += b! ? 1 : -1;
+              bean.localSelect = b;
+            });
+          },
+          activeColor: theme.primaryColor,
+        ),
+        GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapDown: (e) {
+              _showItemMenu(context, bean.id!, e.globalPosition);
             },
-            activeColor: theme.primaryColor,
-          ),
-          Container(
-              width: 180,
-              child: Text(
-                "${bean.bookSourceName}${bean.bookSourceGroup != null ? '(${bean.bookSourceGroup})' : ''}",
-                style: theme.textTheme.subtitle1,
-              )),
-          HSpace(20),
-          if(isLandscape)
-            Expanded(child: Text(bean.bookSourceUrl)),
-          if(!isLandscape)
-            Spacer(),
-          Switch(
-            value: bean.enabled,
-            onChanged: (b) {
-              bean.enabled = b;
-              setState((){
-                var helper = DatabaseHelper();
-                helper.updateBookSourceStateById(bean.id!,b);
-              });
-            },
-            activeColor: theme.primaryColor,
-          )
-        ],
-      ),
+            child: Container(
+                child: Text(
+                  "${bean.bookSourceName}${bean.bookSourceGroup != null ? '(${bean.bookSourceGroup})' : ''}",
+                  textAlign: TextAlign.center,
+                ))),
+        HSpace(10),
+        if (isLandscape) Expanded(child: Text(bean.bookSourceUrl)),
+        if (!isLandscape) Spacer(),
+        Switch(
+          value: bean.enabled,
+          onChanged: (b) {
+            bean.enabled = b;
+            setState(() {
+              var helper = DatabaseHelper();
+              helper.updateBookSourceStateById(bean.id!, b);
+            });
+          },
+          activeColor: theme.primaryColor,
+          inactiveTrackColor: theme.disabledColor,
+        )
+      ],
     );
   }
 
-
-  void _showItemMenu(BuildContext context,int sourceId, Offset position) async{
-    var result = await showMenu(context: context, position: RelativeRect.fromLTRB(position.dx, position.dy, 0, 0), items: [
-      PopupMenuItem(child: Text('校验书源'),value: 0,),
-      PopupMenuItem(child: Text('复制到剪贴板'),value: 1,),
-    ]);
-    if(result == 0){
+  void _showItemMenu(
+      BuildContext context, int sourceId, Offset position) async {
+    var result = await showMenu(
+        context: context,
+        position: RelativeRect.fromLTRB(position.dx, position.dy-30, position.dx+30, position.dy+30),
+        items: [
+          PopupMenuItem(
+            child: Text('校验书源'),
+            value: 0,
+          ),
+          PopupMenuItem(
+            child: Text('复制到剪贴板'),
+            value: 1,
+          ),
+        ]);
+    if (result == 0) {
       _verifySource(sourceId);
-    }else if(result == 1){
+    } else if (result == 1) {
       _copySource(sourceId);
     }
   }
 
-  void _copySource(int sourceId) async{
+  void _copySource(int sourceId) async {
     print('copy..');
 
     var source = await _getSourceMap(sourceId);
     var s = jsonEncode(source);
     Clipboard.setData(ClipboardData(text: s));
     BotToast.showText(text: '已复制');
-
   }
 
-  void _verifySource(int sourceId) async{
+  void _verifySource(int sourceId) async {
     var source = await _getSourceMap(sourceId);
     var cancel = BotToast.showLoading();
-    var success = await SourceVerifyHelper().verify(BookSourceBean.fromJson(source), (progressText, done) {
-
-    });
+    var success = await SourceVerifyHelper()
+        .verify(BookSourceBean.fromJson(source), (progressText, done) {});
     cancel();
-    BotToast.showText(text: success??false?'校验成功':'可能失效了');
-
+    BotToast.showText(text: success ?? false ? '校验成功' : '可能失效了');
   }
 
-  dynamic _getSourceMap(int sourceId) async{
+  dynamic _getSourceMap(int sourceId) async {
     var source = await DatabaseHelper().queryBookSourceMapById(sourceId);
-    if(source == null){
+    if (source == null) {
       return;
     }
     source = Map.from(source);
@@ -383,7 +401,6 @@ class _StateSourceList extends State<PageSourceList> {
     source['ruleBookInfo'] = jsonDecode(source['ruleBookInfo']);
     source['ruleToc'] = jsonDecode(source['ruleToc']);
     source['ruleContent'] = jsonDecode(source['ruleContent']);
-
 
     return Future.value(source);
   }
@@ -426,13 +443,13 @@ class _StateSourceList extends State<PageSourceList> {
     setState(() {});
   }
 
-  void _deleteSelect() async{
-    if(_selectCount==0){
+  void _deleteSelect() async {
+    if (_selectCount == 0) {
       return;
     }
     List<int> ids = [];
     for (var value in bookSourceList) {
-      if(value.localSelect){
+      if (value.localSelect) {
         ids.add(value.id!);
       }
     }
@@ -441,57 +458,49 @@ class _StateSourceList extends State<PageSourceList> {
     await _fetchListAndUpdate(null);
   }
 
-  void _verifySelect() async{
-    if(_selectCount==0){
+  void _verifySelect() async {
+    if (_selectCount == 0) {
       return;
     }
     isVerifyProgress = true;
-    setState(() {
-
-    });
+    setState(() {});
 
     List<int> ids = [];
     for (var value in bookSourceList) {
-      if(value.localSelect){
+      if (value.localSelect) {
         ids.add(value.id!);
       }
     }
-    await _sourceVerifyBatchHelper.verify(ids,(hint){
+    await _sourceVerifyBatchHelper.verify(ids, (hint) {
       verifyHint = hint;
-      setState(() {
-
-      });
+      setState(() {});
     });
 
     isVerifyProgress = false;
-    setState(() {
-
-    });
+    setState(() {});
     BotToast.showText(text: '校验完成');
     await _fetchListAndUpdate(null);
   }
 
-  void _stateSelect(bool enabled) async{
-    if(_selectCount==0){
+  void _stateSelect(bool enabled) async {
+    if (_selectCount == 0) {
       return;
     }
     List<int> ids = [];
     for (var value in bookSourceList) {
-      if(value.localSelect){
+      if (value.localSelect) {
         ids.add(value.id!);
       }
     }
     var helper = DatabaseHelper();
-    await helper.updateBookSourceStateByIds(ids,enabled);
+    await helper.updateBookSourceStateByIds(ids, enabled);
     await _fetchListAndUpdate(null);
   }
 
-  void _stopBatchVerify(){
+  void _stopBatchVerify() {
     _sourceVerifyBatchHelper.working = false;
     verifyHint = '停止中...';
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void _selectAllDisable() {
@@ -502,6 +511,7 @@ class _StateSourceList extends State<PageSourceList> {
     }
     setState(() {});
   }
+
   void _selectAllEnable() {
     _selectCount = 0;
     for (var s in bookSourceList) {
