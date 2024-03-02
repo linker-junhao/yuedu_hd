@@ -190,7 +190,6 @@ class _PageAddBookState extends State<PageAddBook> {
 
   Container _buildSearch(ThemeData theme) {
     return Container(
-      height: 40,
       width: double.maxFinite,
       padding: EdgeInsets.only(left: 8, right: 8),
       decoration: BoxDecoration(
@@ -211,10 +210,10 @@ class _PageAddBookState extends State<PageAddBook> {
               },
               autofocus: false,
               maxLines: 1,
+              textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
                 hintText: '输入书名或作者 搜索书籍',
-                prefixIconConstraints:
-                    BoxConstraints(minWidth: 24, maxHeight: 24),
+                hintStyle: TextStyle(fontSize: 17),
                 prefixIcon: Icon(
                   Icons.search_outlined,
                   color: theme.hintColor,

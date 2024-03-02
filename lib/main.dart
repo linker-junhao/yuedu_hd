@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:worker_manager/worker_manager.dart';
+import 'package:yuedu_hd/db/book_source_helper.dart';
 import 'package:yuedu_hd/ui/YDRouter.dart';
 import 'package:yuedu_hd/ui/home_page.dart';
 import 'package:yuedu_hd/ui/reading/page_reading.dart';
@@ -14,7 +16,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'ui/style/ycolors.dart';
 
-void main() async{
+void main() async {
   if (Platform.isWindows || Platform.isLinux) {
     // Initialize FFI
     sqfliteFfiInit();
@@ -28,7 +30,21 @@ void main() async{
   // ]);
   // SystemChrome.setEnabledSystemUIOverlays([]);
   await Executor().warmUp(log: true);
+  loadBookRules();
   runApp(MyApp());
+}
+
+dynamic loadBookRules() async {
+  try {
+    var req = await Dio(BaseOptions(responseType: ResponseType.plain))
+        .get('http://dev.linker.lkr:8083/ajax/reader-rules');
+    var jsonStr = req.data;
+
+    var helper = BookSourceHelper.getInstance();
+    var list = await helper.parseSourceString(jsonStr);
+    await helper.updateDataBases(list);
+  } catch (e) {
+  } finally {}
 }
 
 class MyApp extends StatelessWidget {
@@ -40,7 +56,7 @@ class MyApp extends StatelessWidget {
       builder: BotToastInit(), //1. call BotToastInit
       navigatorObservers: [BotToastNavigatorObserver()],
       navigatorKey: YDRouter.mainRouter,
-      title: 'IDX READ',
+      title: 'PUPU文学',
       theme: ThemeData(
         // This is the theme of your application.
         primaryColor: YColors.primary,
@@ -57,10 +73,9 @@ class MyApp extends StatelessWidget {
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
-
       ),
-      routes: <String,WidgetBuilder>{
-        YDRouter.READING_PAGE:(context)=>PageReading(),
+      routes: <String, WidgetBuilder>{
+        YDRouter.READING_PAGE: (context) => PageReading(),
       },
       home: HomePage(),
     );
@@ -71,8 +86,8 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
   // Override behavior methods and getters like dragDevices
   @override
   Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-    // etc.
-  };
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        // etc.
+      };
 }

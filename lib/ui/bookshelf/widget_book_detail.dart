@@ -14,7 +14,8 @@ class BookDetailWidget extends StatefulWidget {
   final int bookId;
   final Function? backClick;
 
-  BookDetailWidget(this.bookId, {this.backClick}) : super(key: ValueKey(bookId));
+  BookDetailWidget(this.bookId, {this.backClick})
+      : super(key: ValueKey(bookId));
 
   @override
   State<StatefulWidget> createState() {
@@ -24,7 +25,7 @@ class BookDetailWidget extends StatefulWidget {
 
 class BookDetailState extends State<BookDetailWidget> {
   BookInfoBean? bookDetail;
-  String firstChapter='获取目录中...';
+  String firstChapter = '获取目录中...';
 
   String _cancelToken = '';
 
@@ -41,12 +42,17 @@ class BookDetailState extends State<BookDetailWidget> {
 
   Widget _buildEmpty() {
     return Container(
-      child: Center(child: Text(widget.bookId>0?'加载中...':'要不你先搜索下\n(*^_^*)',textAlign: TextAlign.center,)),
+      child: Center(
+          child: Text(
+        widget.bookId > 0 ? '加载中...' : '要不你先搜索下\n(*^_^*)',
+        textAlign: TextAlign.center,
+      )),
     );
   }
 
   Widget _buildDetail(BuildContext context) {
-    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     var theme = Theme.of(context);
     return Stack(
       children: [
@@ -70,7 +76,8 @@ class BookDetailState extends State<BookDetailWidget> {
                     child: SizedBox(
                         height: 120,
                         width: 96,
-                        child: Image.network(bookDetail!.coverUrl!,
+                        child: Image.network(
+                          bookDetail!.coverUrl!,
                           loadingBuilder: (BuildContext context, Widget child,
                               ImageChunkEvent? loadingProgress) {
                             if (loadingProgress == null) return child;
@@ -78,7 +85,9 @@ class BookDetailState extends State<BookDetailWidget> {
                               height: 120,
                               width: 100,
                               color: Colors.grey,
-                              child: Center(child: Text('loading'),),
+                              child: Center(
+                                child: Text('loading'),
+                              ),
                             );
                           },
                           errorBuilder: (BuildContext context, Object exception,
@@ -122,34 +131,46 @@ class BookDetailState extends State<BookDetailWidget> {
                               _fetchDetail(widget.bookId);
                             },
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 20, right: 20),
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 20),
                               child: Icon(Icons.sync),
                             )),
-                        VerticalDivider(width: 0.5,thickness: 1,),
+                        VerticalDivider(
+                          width: 0.5,
+                          thickness: 1,
+                        ),
                         Expanded(
                             child: SizedBox(
                                 height: 50,
                                 child: TextButton(
-                                    onPressed: () async{
-                                      await DatabaseHelper().addToBookShelf(widget.bookId);
+                                    onPressed: () async {
+                                      await DatabaseHelper()
+                                          .addToBookShelf(widget.bookId);
                                       setState(() {
                                         bookDetail!.inbookShelf = 1;
                                       });
                                     },
-                                    child: Text(bookDetail!.inbookShelf == 0?'加入书架':'已在书架'),
-                                    style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap)
-                                ))),
+                                    child: Text(bookDetail!.inbookShelf == 0
+                                        ? '加入书架'
+                                        : '已在书架'),
+                                    style: ButtonStyle(
+                                        tapTargetSize: MaterialTapTargetSize
+                                            .shrinkWrap)))),
                         Expanded(
                             child: SizedBox(
                                 height: 50,
                                 child: TextButton(
                                     onPressed: () {
-                                      YDRouter.mainRouter.currentState?.pushNamed(YDRouter.READING_PAGE,arguments: {'bookId':bookDetail!.id});
+                                      YDRouter.mainRouter.currentState
+                                          ?.pushNamed(YDRouter.READING_PAGE,
+                                              arguments: {
+                                            'bookId': bookDetail!.id
+                                          });
                                     },
                                     child: Text('开始阅读'),
                                     style: ButtonStyle(
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap
-                                    )))),
+                                        tapTargetSize: MaterialTapTargetSize
+                                            .shrinkWrap)))),
                       ],
                     ),
                   ),
@@ -158,12 +179,17 @@ class BookDetailState extends State<BookDetailWidget> {
             )),
           ],
         ),
-        if(!isLandscape)
+        if (!isLandscape)
           Container(
             padding: EdgeInsets.all(8),
-            child: IconButton(icon: Icon(CupertinoIcons.back,color: theme.primaryColor,), onPressed: (){
-              widget.backClick!();
-            }),
+            child: IconButton(
+                icon: Icon(
+                  CupertinoIcons.back,
+                  color: theme.primaryColor,
+                ),
+                onPressed: () {
+                  widget.backClick!();
+                }),
           ),
       ],
     );
@@ -183,7 +209,8 @@ class BookDetailState extends State<BookDetailWidget> {
                 borderRadius: BorderRadius.all(Radius.circular(2))),
             child: Text(
               tag,
-              style: TextStyle(color: theme.colorScheme.secondary, fontSize: 13),
+              style:
+                  TextStyle(color: theme.colorScheme.secondary, fontSize: 13),
             ),
           )
       ],
@@ -203,25 +230,16 @@ class BookDetailState extends State<BookDetailWidget> {
               padding: EdgeInsets.all(4),
               child: Row(
                 children: [
-                  Icon(CupertinoIcons.person_circle,),
+                  Icon(
+                    CupertinoIcons.person_circle,
+                  ),
                   HSpace(8),
-                  Text('作者: ${bookDetail!.author}',style: theme.textTheme.headline6,maxLines: 1,overflow: TextOverflow.ellipsis,),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(4),
-              child: Row(
-                children: [
-                  Icon(Icons.explore_outlined),
-                  HSpace(8),
-                  Expanded(child: Text('来源: ${bookDetail!.sourceBean!.bookSourceName}',style: theme.textTheme.headline6,maxLines: 1,overflow: TextOverflow.ellipsis,)),
-                  SizedBox(height: 26,width: 60,child: TextButton(onPressed: (){
-                    _showSelectSource(context);
-                  },
-                  child: Text('换源', style: TextStyle(color: theme.canvasColor),),
-                  style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                  )),
+                  Text(
+                    '作者: ${bookDetail!.author}',
+                    style: theme.textTheme.titleMedium,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
               ),
             ),
@@ -231,7 +249,13 @@ class BookDetailState extends State<BookDetailWidget> {
                 children: [
                   Icon(CupertinoIcons.bolt_circle),
                   HSpace(8),
-                  Expanded(child: Text('最新章节: ${bookDetail!.lastChapter}',style: theme.textTheme.subtitle1,maxLines: 1,overflow: TextOverflow.ellipsis,)),
+                  Expanded(
+                      child: Text(
+                    '最新章节: ${bookDetail!.lastChapter}',
+                    style: theme.textTheme.titleMedium,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  )),
                 ],
               ),
             ),
@@ -241,17 +265,22 @@ class BookDetailState extends State<BookDetailWidget> {
                 children: [
                   Icon(CupertinoIcons.book_circle),
                   HSpace(8),
-                  Expanded(child: Text('目录: $firstChapter',style: theme.textTheme.subtitle1,maxLines: 1,overflow: TextOverflow.ellipsis,)),
-                  SizedBox(height: 26,child: TextButton(onPressed: (){
-                    _showChapters(context);
-                  },
-                  child: Text('查看目录', style: TextStyle(
-                    color: theme.canvasColor
-                  ),),
-                  style: ButtonStyle(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    backgroundColor: MaterialStateProperty.all(theme.primaryColor)
-                  ),)),
+                  Expanded(
+                      child: Text(
+                    '目录: $firstChapter',
+                    style: theme.textTheme.titleMedium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  )),
+                  TextButton(
+                      onPressed: () {
+                        _showChapters(context);
+                      },
+                      style: TextButton.styleFrom(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          minimumSize: Size.zero,
+                          padding: EdgeInsets.zero),
+                      child: Text('查看目录'))
                 ],
               ),
             ),
@@ -269,7 +298,7 @@ class BookDetailState extends State<BookDetailWidget> {
             //   ),
             // ),
             VSpace(16),
-            Text(bookDetail?.intro??'简介为空'),
+            Text(bookDetail?.intro ?? '简介为空'),
           ],
         ),
       ),
@@ -281,26 +310,26 @@ class BookDetailState extends State<BookDetailWidget> {
       return;
     }
     BookTocHelper.getInstance().cancel(_cancelToken);
-    bookDetail = await DatabaseHelper().queryBookInfoFromBookIdCombSourceId(bookId,-1);
+    bookDetail =
+        await DatabaseHelper().queryBookInfoFromBookIdCombSourceId(bookId, -1);
     setState(() {
       firstChapter = '获取中...';
     });
     var chapterList = await BookTocHelper.getInstance()
-        .updateChapterList(bookId, -1, notUpdateDB: false,onCancelToken: (token){
-          _cancelToken = token;
+        .updateChapterList(bookId, -1, notUpdateDB: false,
+            onCancelToken: (token) {
+      _cancelToken = token;
     }).catchError((e) => null);
     // for (var value in chapterList) {
     //   print(value.toString());
     // }
-    if(chapterList==null || chapterList.isEmpty){
+    if (chapterList == null || chapterList.isEmpty) {
       firstChapter = '目录空,请重试或换源';
-    }else{
+    } else {
       firstChapter = chapterList[0].name!;
       bookDetail!.lastChapter = chapterList.last.name;
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -309,24 +338,27 @@ class BookDetailState extends State<BookDetailWidget> {
     super.dispose();
   }
 
-  void _showSelectSource(context) async{
-    var result = await showDialog(context:context,builder: (ctx)=>Dialog(child: WidgetSelectSource(widget.bookId)));
-    if(result != null){
+  void _showSelectSource(context) async {
+    var result = await showDialog(
+        context: context,
+        builder: (ctx) => Dialog(child: WidgetSelectSource(widget.bookId)));
+    if (result != null) {
       _fetchDetail(widget.bookId);
     }
   }
 
-  void _showChapters(BuildContext context)async{
-    var result = await showDialog(context:context,builder: (ctx)=>Dialog(child: ChaptersWidget(widget.bookId,(bean){
-
-    }),));
-    if(result!=null){
-      YDRouter.mainRouter.currentState?.pushNamed(YDRouter.READING_PAGE,arguments: {'bookId':widget.bookId,'initChapterName':result});
+  void _showChapters(BuildContext context) async {
+    var result = await showDialog(
+        context: context,
+        builder: (ctx) => Dialog(
+              child: ChaptersWidget(widget.bookId, (bean) {}),
+            ));
+    if (result != null) {
+      YDRouter.mainRouter.currentState?.pushNamed(YDRouter.READING_PAGE,
+          arguments: {'bookId': widget.bookId, 'initChapterName': result});
     }
   }
-
 }
-
 
 class _ArcPainter extends CustomPainter {
   late Paint _mPaint;

@@ -1,14 +1,10 @@
 import 'dart:math';
 
-import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:yuedu_hd/db/BookInfoBean.dart';
 import 'package:yuedu_hd/db/databaseHelper.dart';
-import 'package:yuedu_hd/ui/book_source/widget_select_source.dart';
 import 'package:yuedu_hd/ui/bookshelf/widget_chapters.dart';
-import 'package:yuedu_hd/ui/download/BookDownloader.dart';
 import 'package:yuedu_hd/ui/reading/DisplayConfig.dart';
 import 'package:yuedu_hd/ui/reading/ReadingWidget.dart';
 import 'package:yuedu_hd/ui/reading/event/ChapterChangedEvent.dart';
@@ -16,7 +12,6 @@ import 'package:yuedu_hd/ui/reading/event/NextChapterEvent.dart';
 import 'package:yuedu_hd/ui/reading/event/NextPageEvent.dart';
 import 'package:yuedu_hd/ui/reading/event/PreviousChapterEvent.dart';
 import 'package:yuedu_hd/ui/reading/event/PreviousPageEvent.dart';
-import 'package:yuedu_hd/ui/reading/event/ReloadEvent.dart';
 import 'package:yuedu_hd/ui/settings/MoreStyleSettingsMenu.dart';
 import 'package:yuedu_hd/ui/widget/PopupMenu.dart';
 
@@ -83,10 +78,10 @@ class _PageReadingState extends State<PageReading> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
-      body: RawKeyboardListener(
+      body: KeyboardListener(
         focusNode: FocusNode(),
-        onKey: (e){
-          if(e is RawKeyDownEvent){
+        onKeyEvent: (e){
+          if(e is KeyDownEvent){
             if(e.logicalKey.keyId == LogicalKeyboardKey.keyA.keyId){
               _hideMenuBar();
               PreviousPageEvent.getInstance().emit();
@@ -103,7 +98,6 @@ class _PageReadingState extends State<PageReading> {
               _hideMenuBar();
               NextPageEvent.getInstance().emit();
             }
-
           }
         },
         child: GestureDetector(
@@ -246,56 +240,6 @@ class _PageReadingState extends State<PageReading> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-
-                        IconButton(
-                            icon: Icon(CupertinoIcons.repeat,
-                                color: theme.colorScheme.secondary),
-                            onPressed: () {
-                              _showSourceSelectDialog(context);
-                            }),
-
-                        PopupMenuButton(
-                          tooltip: '缓存',
-                          onSelected: (i){
-                            switch(i){
-                              case 0:
-                                BookDownloader.getInstance().startDownload(bookId);
-                                break;
-                              case 1:
-                                BookDownloader.getInstance().startDownload(bookId,from: currChapterId);
-                                break;
-                              case 2:
-                                BookDownloader.getInstance().startDownload(bookId,from: currChapterId,limit: 10);
-                                break;
-                            }
-                            BotToast.showText(text:"开始缓存,请到【设置】查看下载进度~");
-                          },
-                          itemBuilder: (ctx) {
-                            return [
-                              PopupMenuItem(
-                                child: Text('缓存全部'),
-                                value: 0,
-                              ),
-                              PopupMenuItem(
-                                child: Text('当前开始缓存'),
-                                value: 1,
-                              ),
-                              PopupMenuItem(
-                                child: Text('缓存后十章'),
-                                value: 2,
-                              ),
-                            ];
-                          },
-                          child: IgnorePointer(
-                            child: IconButton(
-                                icon: Icon(Icons.cloud_download_outlined,
-                                    color: theme.colorScheme.secondary),
-                                onPressed: () {
-                                  // BookDownloader.getInstance().startDownload(bookId);
-                                  // BotToast.showText(text:"开始缓存");
-                                }),
-                          ),
-                        ),
                         IconButton(
                             key: _styleMenuKey,
                             icon: Icon(Icons.font_download_outlined,
@@ -315,27 +259,6 @@ class _PageReadingState extends State<PageReading> {
                 ],
               ),
             ),
-            Container(
-              padding: EdgeInsets.all(8),
-              width: double.maxFinite,
-              color: theme.canvasColor,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      child: Text(bookInfo == null
-                          ? '获取书籍信息...'
-                          : '${bookInfo!.name}[${bookInfo!.author}] $currChapterName \n${bookInfo!.bookUrl}',maxLines: 3,overflow: TextOverflow.ellipsis,),
-                    ),
-                  ),
-                  IconButton(
-                      icon: Icon(Icons.refresh),
-                      onPressed: () {
-                        _reloadCurrChapter();
-                      }),
-                ],
-              ),
-            )
           ],
         ),
       ),
@@ -417,20 +340,6 @@ class _PageReadingState extends State<PageReading> {
     }
   }
 
-  void _showSourceSelectDialog(BuildContext context) async {
-    var result = await showDialog(
-        context: context,
-        builder: (ctx)=>Dialog(
-          child: WidgetSelectSource(bookId),
-        ));
-    if (result != null) {
-      //换源以后重新加载
-      initChapterName = null;
-      _readingWidgetKey = GlobalKey();
-      _hideMenuBar();
-    }
-  }
-
   void _fetchBookInfo() async {
     bookInfo =
         await DatabaseHelper().queryBookInfoFromBookIdCombSourceId(bookId, -1);
@@ -469,10 +378,5 @@ class _PageReadingState extends State<PageReading> {
     setState(() {
       showMenuBar = false;
     });
-  }
-
-  void _reloadCurrChapter() {
-    _hideMenuBar();
-    ReloadEvent.getInstance().reload(-1);
   }
 }

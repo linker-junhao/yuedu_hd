@@ -24,10 +24,8 @@ class _PageSourceAddState extends State<PageSourceAdd> {
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
-    // _textEditingController.text = 'https://gitee.com/gekunfei/web/raw/master/myBookshelf/xc1772006';
     if(!kReleaseMode){
-      // _textEditingController.text = 'http://yck.mumuceo.com/d/MpJRW';
-      _textEditingController.text = 'http://shuyuan.miaogongzi.net/shuyuan/1627741986.json';
+      _textEditingController.text = 'http://dev.linker.lkr:8083/ajax/reader-rules';
     }
   }
 
@@ -76,7 +74,7 @@ class _PageSourceAddState extends State<PageSourceAdd> {
 方式二：复制配置文件内容到粘贴板，点击【粘贴板导入】按钮。
 暂不支持编辑和修改，同网址书源每次导入均覆盖内容。
 规则参考:https://alanskycn.gitee.io/teachme
-推荐微信小程序[三目小仓库]获取书源
+推荐微信小程序[PUPU文学]获取书源
                           ''',style: isLandscape?theme.textTheme.headline6:theme.textTheme.subtitle2,),
                         ),
                         VSpace(10),
@@ -156,7 +154,7 @@ class _PageSourceAddState extends State<PageSourceAdd> {
 仅支持JSOUP格式和CSS格式的书源，导入自动过滤
 参考:https://alanskycn.gitee.io/teachme/
 你可以从搜索引擎，gitee,github，酷安等社区获取别人分享的书源。
-推荐微信小程序[三目小仓库]获取书源。
+推荐微信小程序[PUPU文学小仓库]获取书源。
 新手上路？点击使用热门书源,导入开始搜索!
 '''),
         actions: [
@@ -207,7 +205,6 @@ class _PageSourceAddState extends State<PageSourceAdd> {
     _log = '';
     setState(() {
       showLoading = true;
-
     });
     try{
       var req = await Dio(BaseOptions(responseType: ResponseType.plain)).get(_textEditingController.text.trim());

@@ -55,33 +55,33 @@
 
 在使用腕上txt小说阅读器网络服务进行网上交易时，您不可避免的要向交易对方或潜在的交易对方披露自己的个人信息，如联络方式或者邮政地址。请您妥善保护自己的个人信息，仅在必要的情形下向他人提供。如您发现自己的个人信息泄密，尤其是腕上txt小说阅读器用户名及密码发生泄露，请您立即联络腕上txt小说阅读器客服，以便腕上txt小说阅读器采取相应措施。
 
-Read HD privacy policy
-Read HD respects and protects the personal privacy of all service users. In order to provide you with more accurate and personalized services, Reading HD will use and disclose your personal information in accordance with the provisions of this privacy policy. But reading HD will treat this information with a high degree of diligence and prudence. Except as otherwise provided in this privacy policy, reading HD will not disclose this information or provide it to a third party without your prior permission. Reading HD will update this privacy policy from time to time. When you agree to read the HD service use agreement, you are deemed to have agreed to the entire content of this privacy policy. This privacy policy is an integral part of the read HD service usage agreement.
+PUPU Read privacy policy
+PUPU Read respects and protects the personal privacy of all service users. In order to provide you with more accurate and personalized services, PUPU Read will use and disclose your personal information in accordance with the provisions of this privacy policy. But PUPU Read will treat this information with a high degree of diligence and prudence. Except as otherwise provided in this privacy policy, PUPU Read will not disclose this information or provide it to a third party without your prior permission. PUPU Read will update this privacy policy from time to time. When you agree to read the PUPU Read service use agreement, you are deemed to have agreed to the entire content of this privacy policy. This privacy policy is an integral part of the PUPU Read service usage agreement.
 
 One: scope of application
-When you register for reading HD account, you provide personal registration information according to the requirements of reading HD;
+When you register for PUPU Read account, you provide personal registration information according to the requirements of PUPU Read;
 
-When you use the reading HD network service or access the reading HD platform webpage, the information on your browser and computer that is automatically received and recorded by the reading HD, including but not limited to your IP address, browser type, and language used , Access date and time, software and hardware characteristics information and web page records you need;
+When you use the PUPU Read network service or access the PUPU Read platform webpage, the information on your browser and computer that is automatically received and recorded by the PUPU Read, including but not limited to your IP address, browser type, and language used , Access date and time, software and hardware characteristics information and web page records you need;
 
-Read the user's personal data obtained by HD from business partners through legal channels.
+Read the user's personal data obtained by PUPU Read from business partners through legal channels.
 
 You understand and agree that the following information does not apply to this privacy policy:
 
-The keyword information you enter when you use the search service provided by the HD platform;
+The keyword information you enter when you use the search service provided by the PUPU Read platform;
 
-Read the relevant information and data collected by HD that you are reading HD, including but not limited to participating activities, transaction information and evaluation details;
+Read the relevant information and data collected by PUPU Read that you are PUPU Read, including but not limited to participating activities, transaction information and evaluation details;
 
-Violation of legal regulations or violations of the rules of reading HD and the measures taken against you by reading HD.
+Violation of legal regulations or violations of the rules of PUPU Read and the measures taken against you by PUPU Read.
 
 Two: Information Use
-Reading HD will not provide, sell, rent, share or trade your personal information to any unrelated third party, unless you have obtained your permission in advance, or that third party and Reading HD (including Reading HD affiliates) will provide you individually or jointly Service, and after the service ends, it will be prohibited from accessing all these materials that it was able to access before.
+PUPU Read will not provide, sell, rent, share or trade your personal information to any unrelated third party, unless you have obtained your permission in advance, or that third party and PUPU Read (including PUPU Read affiliates) will provide you individually or jointly Service, and after the service ends, it will be prohibited from accessing all these materials that it was able to access before.
 
-Reading HD also does not allow any third party to collect, edit, sell or disseminate your personal information by any means. If any user of the reading HD platform engages in the above activities, once discovered, reading HD has the right to immediately terminate the service agreement with the user.
+PUPU Read also does not allow any third party to collect, edit, sell or disseminate your personal information by any means. If any user of the PUPU Read platform engages in the above activities, once discovered, PUPU Read has the right to immediately terminate the service agreement with the user.
 
-For the purpose of serving users, reading HD may use your personal information to provide you with information you are interested in, including but not limited to sending you product and service information, or sharing information with its partners so that they can send you Information about its products and services (the latter requires your prior consent).
+For the purpose of serving users, PUPU Read may use your personal information to provide you with information you are interested in, including but not limited to sending you product and service information, or sharing information with its partners so that they can send you Information about its products and services (the latter requires your prior consent).
 
 Three: Information disclosure
-Under the following circumstances, Read HD will disclose your personal information in whole or in part in accordance with your personal wishes or legal requirements:
+Under the following circumstances, PUPU Read will disclose your personal information in whole or in part in accordance with your personal wishes or legal requirements:
 
 With your prior consent, disclose to a third party;
 
@@ -89,25 +89,25 @@ In order to provide the products and services you request, you must share your p
 
 Disclosure to a third party or administrative or judicial institution in accordance with relevant provisions of the law or the requirements of administrative or judicial institutions;
 
-If you violate relevant Chinese laws, regulations, or read the HD service agreement or related rules, you need to disclose to a third party;
+If you violate relevant Chinese laws, regulations, or read the PUPU Read service agreement or related rules, you need to disclose to a third party;
 
 If you are a qualified intellectual property complaint and have filed a complaint, you should disclose it to the respondent at the request of the respondent so that both parties can handle possible rights disputes;
 
-In a transaction created on the Reading HD platform, if any party to the transaction fulfills or partially fulfills its transaction obligations and makes an information disclosure request, Reading HD has the right to decide to provide the user with the necessary information such as the contact information of the counterparty to the transaction. Facilitate the completion of the transaction or the settlement of disputes.
+In a transaction created on the PUPU Read platform, if any party to the transaction fulfills or partially fulfills its transaction obligations and makes an information disclosure request, PUPU Read has the right to decide to provide the user with the necessary information such as the contact information of the counterparty to the transaction. Facilitate the completion of the transaction or the settlement of disputes.
 
-Other reading HD according to laws, regulations or website policies deem appropriate disclosures.
+Other PUPU Read according to laws, regulations or website policies deem appropriate disclosures.
 
 Four: Information storage and exchange
-The information and data about you collected by reading HD will be stored on the servers of reading HD and/or its affiliates. These information and data may be transmitted to your country or region or abroad where the information and data collected by reading HD are located. Visited, stored and displayed outside the country.
+The information and data about you collected by PUPU Read will be stored on the servers of PUPU Read and/or its affiliates. These information and data may be transmitted to your country or region or abroad where the information and data collected by PUPU Read are located. Visited, stored and displayed outside the country.
 
 Five: Use of Cookies
-If you do not refuse to accept cookies, ReadHD will set or access cookies on your computer so that you can log in or use the ReadHD platform services or functions that rely on cookies. Reading HD using cookies can provide you with more thoughtful and personalized services, including promotional services.
+If you do not refuse to accept cookies, ReadHD will set or access cookies on your computer so that you can log in or use the ReadHD platform services or functions that rely on cookies. PUPU Read using cookies can provide you with more thoughtful and personalized services, including promotional services.
 
-You have the right to choose to accept or refuse to accept cookies. You can refuse to accept cookies by modifying your browser settings. But if you choose to refuse to accept cookies, you may not be able to log in or use the read HD network services or functions that rely on cookies.
+You have the right to choose to accept or refuse to accept cookies. You can refuse to accept cookies by modifying your browser settings. But if you choose to refuse to accept cookies, you may not be able to log in or use the PUPU Read network services or functions that rely on cookies.
 
-This policy will apply to the relevant information obtained by reading the cookies set by HD.
+This policy will apply to the relevant information obtained by reading the cookies set by PUPU Read.
 
 Six: Information Security
-Reading HD account has security protection function, please keep your user name and password information properly. Reading HD will ensure that your information is not lost, abused and altered by encrypting user passwords and other security measures. Despite the aforementioned security measures, please note that there is no "perfect security measure" on the information network.
+PUPU Read account has security protection function, please keep your user name and password information properly. PUPU Read will ensure that your information is not lost, abused and altered by encrypting user passwords and other security measures. Despite the aforementioned security measures, please note that there is no "perfect security measure" on the information network.
 
-When using the reading HD network service to conduct online transactions, you will inevitably disclose your personal information, such as contact information or postal address, to the counterparty or potential counterparty. Please properly protect your personal information and only provide it to others when necessary. If you find that your personal information has been leaked, especially when reading HD username and password are leaked, please contact the reading HD customer service immediately so that reading HD can take corresponding measures.
+When using the PUPU Read network service to conduct online transactions, you will inevitably disclose your personal information, such as contact information or postal address, to the counterparty or potential counterparty. Please properly protect your personal information and only provide it to others when necessary. If you find that your personal information has been leaked, especially when PUPU Read username and password are leaked, please contact the PUPU Read customer service immediately so that PUPU Read can take corresponding measures.

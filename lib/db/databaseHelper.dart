@@ -630,6 +630,15 @@ ON "book_chapter" (
   }
   
   ///清空所有数据
+  dynamic clearBookData() async{
+    return withDB().then((db) async{
+      await db.delete(TABLE_BOOK);
+      await db.delete(TABLE_BOOK_COMB_SOURCE);
+      await db.delete(TABLE_CHAPTER);
+    });
+  }
+
+  ///清空所有数据
   dynamic clearAllData() async{
     return withDB().then((db) async{
       await db.delete(TABLE_BOOK);
@@ -638,5 +647,4 @@ ON "book_chapter" (
       await db.delete(TABLE_SOURCE);
     });
   }
-
 }
