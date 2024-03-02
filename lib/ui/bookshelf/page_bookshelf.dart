@@ -146,7 +146,7 @@ class _PageBookShelfState extends State<PageBookShelf>
     if (_bookList.isEmpty) {
       return Center(
         child: Text(
-          '你的书架空空如也~\n\n\n😀\n\n请先添加书源:\n下方【书源】->点击【添加书源】\n然后点击右下角[+]按钮开始搜索书籍',
+          '你的书架空空如也~\n\n😀\n\n点击右下角[+]按钮开始搜索书籍',
           textAlign: TextAlign.center,
         ),
       );
@@ -348,15 +348,7 @@ class _PageBookShelfState extends State<PageBookShelf>
 
   void _showDelete(BuildContext context, BookShelfBean bean) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Row(
-        children: <Widget>[
-          Icon(
-            Icons.delete,
-            color: Colors.white,
-          ),
-          Text('确定删除 ${bean.bookName} ?')
-        ],
-      ),
+      content: Text('确定删除 ${bean.bookName} ?', maxLines: 2, overflow: TextOverflow.ellipsis,),
       action: SnackBarAction(
         textColor: Colors.red,
         label: '删除',

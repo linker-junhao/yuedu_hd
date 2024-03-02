@@ -326,11 +326,9 @@ class _PageAddBookState extends State<PageAddBook> {
                   infoBean.name!,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: theme.textTheme.subtitle1!.fontSize),
+                      fontSize: theme.textTheme.titleMedium!.fontSize),
                 ),
                 Text(infoBean.author!),
-                Text(
-                    '${infoBean.sourceBean!.bookSourceName}等${infoBean.sourceCount}个书源'),
                 Text(
                   infoBean.intro ?? '没有简介内容',
                   maxLines: 3,

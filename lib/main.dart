@@ -37,7 +37,7 @@ void main() async {
 dynamic loadBookRules() async {
   try {
     var req = await Dio(BaseOptions(responseType: ResponseType.plain))
-        .get('http://dev.linker.lkr:8083/ajax/reader-rules');
+        .get('https://www.idxstudio.cn/ebook/ajax/reader-rules');
     var jsonStr = req.data;
 
     var helper = BookSourceHelper.getInstance();
