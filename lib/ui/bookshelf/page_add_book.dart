@@ -176,7 +176,7 @@ class _PageAddBookState extends State<PageAddBook> {
         Visibility(
             visible: _selectBookId != -1,
             child: Container(
-                color: theme.backgroundColor,
+                color: theme.colorScheme.background,
                 child: BookDetailWidget(
                   _selectBookId,
                   backClick: () {
