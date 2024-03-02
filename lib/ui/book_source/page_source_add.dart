@@ -184,7 +184,6 @@ class _PageSourceAddState extends State<PageSourceAdd> {
     _log = '';
     setState(() {
       showLoading = true;
-
     });
     try{
       var jsonStr = await Clipboard.getData(Clipboard.kTextPlain);

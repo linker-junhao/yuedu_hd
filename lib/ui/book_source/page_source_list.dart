@@ -70,7 +70,7 @@ class _StateSourceList extends State<PageSourceList> {
                       '添加书源',
                       style: TextStyle(
                           color: theme.primaryColor,
-                          fontSize: theme.textTheme.subtitle2!.fontSize),
+                          fontSize: theme.textTheme.titleSmall!.fontSize),
                     )),
               ],
             ),
