@@ -187,6 +187,21 @@ class BookSourceBean{
     return bean;
   }
 
+  BookExploreRuleBean mapExploreRuleBean(){
+    BookExploreRuleBean bean = BookExploreRuleBean();
+    var map = jsonDecode(jsonDecode(ruleExplore!));
+    bean.name = map['name'];
+    bean.author = map['author'];
+    bean.bookList = map['bookList'];
+    bean.bookUrl = map['bookUrl'];
+    bean.coverUrl = map['coverUrl'];
+    bean.intro = map['intro'];
+    bean.kind = map['kind'];
+    bean.lastChapter = map['lastChapter'];
+    bean.wordCount = map['wordCount'];
+    return bean;
+  }
+
   BookSearchRuleBean mapSearchRuleBean(){
     BookSearchRuleBean bean = BookSearchRuleBean();
     var map = jsonDecode(jsonDecode(ruleSearch!));
@@ -232,6 +247,20 @@ class BookSourceBean{
 
 }
 
+class BookExploreUrlBean{
+  String? url;
+  Map<String,String>? headers;
+  String? method;
+  String? body;
+  String? charset;
+  int? sourceId=-1;
+
+  @override
+  String toString() {
+    return 'BookExploreUrlBean{url: $url, headers: $headers, method: $method, body: $body, charset: $charset}';
+  } //gbk gb2312,utf8
+}
+
 class BookSearchUrlBean{
   String? url;
   Map<String,String>? headers;
@@ -249,8 +278,6 @@ class BookSearchUrlBean{
   String toString() {
     return 'BookSearchUrlBean{url: $url, headers: $headers, method: $method, body: $body, charset: $charset}';
   } //gbk gb2312,utf8
-
-
 }
 
 
@@ -269,6 +296,23 @@ class BookSearchRuleBean{
   @override
   String toString() {
     return 'BookSearchRuleBean{name: $name, author: $author, bookList: $bookList, bookUrl: ${bookUrl??tocUrl}, coverUrl: $coverUrl, intro: $intro, kind: $kind, lastChapter: $lastChapter, wordCount: $wordCount}';
+  }
+}
+class BookExploreRuleBean{
+  String? name;
+  String? author;
+  String? bookList;
+  String? bookUrl;
+  String? coverUrl;
+  String? intro;
+  String? kind;
+  String? lastChapter;
+  String? wordCount;
+  String? tocUrl;
+
+  @override
+  String toString() {
+    return 'BookExploreRuleBean{name: $name, author: $author, bookList: $bookList, bookUrl: ${bookUrl??tocUrl}, coverUrl: $coverUrl, intro: $intro, kind: $kind, lastChapter: $lastChapter, wordCount: $wordCount}';
   }
 }
 

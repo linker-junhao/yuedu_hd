@@ -54,16 +54,11 @@ class _PageBookShelfState extends State<PageBookShelf>
               children: [
                 Expanded(
                   child: TabBar(
+                    tabAlignment: TabAlignment.start,
                     tabs: [
                       Tab(
                         text: '全部',
                       ),
-                      // Tab(
-                      //   text: '分组一',
-                      // ),
-                      // Tab(
-                      //   text: '分组二',
-                      // ),
                     ],
                     controller: _tabController,
                     indicatorColor: Colors.transparent,

@@ -159,14 +159,14 @@ class HomeState extends State<HomePage> {
             switchPageTo(PAGE_BOOK);
           },
         ),
-        // _HomeMenuItem(
-        //   Icons.explore_outlined,
-        //   "发现",
-        //   isSelected: currPage == PAGE_EXPLORE,
-        //   onTap: () {
-        //     switchPageTo(PAGE_EXPLORE);
-        //   },
-        // ),
+        _HomeMenuItem(
+          Icons.explore_outlined,
+          "发现",
+          isSelected: currPage == PAGE_EXPLORE,
+          onTap: () {
+            switchPageTo(PAGE_EXPLORE);
+          },
+        ),
         // _HomeMenuItem(
         //   Icons.apps_outlined,
         //   "社区",
@@ -175,14 +175,14 @@ class HomeState extends State<HomePage> {
         //     switchPageTo(PAGE_STORE);
         //   },
         // ),
-        _HomeMenuItem(
-          Icons.cloud_circle_outlined,
-          "书源",
-          isSelected: currPage == PAGE_SOURCE,
-          onTap: () {
-            switchPageTo(PAGE_SOURCE);
-          },
-        ),
+        // _HomeMenuItem(
+        //   Icons.cloud_circle_outlined,
+        //   "书源",
+        //   isSelected: currPage == PAGE_SOURCE,
+        //   onTap: () {
+        //     switchPageTo(PAGE_SOURCE);
+        //   },
+        // ),
         Spacer(),
         _HomeMenuItem(
           Icons.settings_outlined,
@@ -207,6 +207,17 @@ class HomeState extends State<HomePage> {
             isSelected: currPage == PAGE_BOOK,
             onTap: () {
               switchPageTo(PAGE_BOOK);
+            },
+            orientation: Orientation.portrait,
+          ),
+        ),
+        Expanded(
+          child: _HomeMenuItem(
+            Icons.explore_outlined,
+            "发现",
+            isSelected: currPage == PAGE_EXPLORE,
+            onTap: () {
+              switchPageTo(PAGE_EXPLORE);
             },
             orientation: Orientation.portrait,
           ),

@@ -72,8 +72,8 @@ class BookContentHelper{
       var counter = 0;
       while(bookUrl!=null){
         counter ++;
-        if(counter > 10){
-          throw Exception('正文分页超过十页');
+        if(counter > 40){
+          throw Exception('正文分页超过40页');
         }
         String? htmlString = await _request(requestOptions, bookUrl);
         if(htmlString == null || htmlString.isEmpty){

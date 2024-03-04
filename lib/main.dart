@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:worker_manager/worker_manager.dart';
@@ -13,6 +15,7 @@ import 'package:yuedu_hd/ui/style/ycolors.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite/sqflite.dart';
+import 'dart:developer' as developer;
 
 import 'ui/style/ycolors.dart';
 
@@ -34,17 +37,37 @@ void main() async {
   runApp(MyApp());
 }
 
+var loadRetryCount = 0;
+
 dynamic loadBookRules() async {
+  loadRetryCount += 1;
   try {
+    var bookRuleUrl = 'https://www.idxstudio.cn/ebook/ajax/reader-rules';
+    if (!kReleaseMode) {
+      bookRuleUrl = 'http://dev.linker.lkr:8083/ajax/reader-rules';
+    }
     var req = await Dio(BaseOptions(responseType: ResponseType.plain))
-        .get('https://www.idxstudio.cn/ebook/ajax/reader-rules');
+        .get(bookRuleUrl);
     var jsonStr = req.data;
 
     var helper = BookSourceHelper.getInstance();
     var list = await helper.parseSourceString(jsonStr);
     await helper.updateDataBases(list);
   } catch (e) {
-  } finally {}
+    developer.log(e.toString());
+    if (loadRetryCount < 5) {
+      Timer(Duration(seconds: 3), () => loadBookRules());
+    } else {
+    }
+  } finally {
+
+  }
+}
+
+Widget transitionBuilderInit(ctx, Widget? child) {
+  return Row(children: [
+    BotToastInit()(ctx, child),
+  ],) ;
 }
 
 class MyApp extends StatelessWidget {
