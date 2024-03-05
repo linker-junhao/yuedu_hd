@@ -16,7 +16,8 @@ class PageExplore extends StatefulWidget {
   _PageExploreState createState() => _PageExploreState();
 }
 
-class _PageExploreState extends State<PageExplore> with SingleTickerProviderStateMixin {
+class _PageExploreState extends State<PageExplore>
+    with SingleTickerProviderStateMixin {
   var sourceList = <BookSourceBean>[];
   TabController? _tabController;
   BookSourceBean? activeSource = null;
@@ -95,44 +96,34 @@ class _PageExploreState extends State<PageExplore> with SingleTickerProviderStat
 
   Widget _buildList(List<BookInfoBean> books, context, bool isPortrait) {
     var _scrollController = ScrollController();
-    if (books.isEmpty) {
-      return Center(
-        child: Text(
-          '此列表暂时没有书籍',
-          textAlign: TextAlign.center,
-        ),
-      );
-    }
     return RefreshIndicator(
-      color: YColors.primary,
-      onRefresh: () async {
-        this.handleOnTab(_activeTabIdx);
-      },
-      child: WheelScroll4Desktop(
-        scrollController: _scrollController,
-        child: MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: ScrollConfiguration(
-            behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
-              PointerDeviceKind.touch,
-              PointerDeviceKind.mouse
-            }),
-            child: WaterfallFlow.builder(
-              physics: AlwaysScrollableScrollPhysics(),
-              controller: _scrollController,
-              gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: isPortrait ? 1 : 2),
-              itemBuilder: (ctx, index) =>
-                  _buildItem(ctx, books[index]),
-              itemCount: books.length,
+        color: YColors.primary,
+        onRefresh: () async {
+          this.handleOnTab(_activeTabIdx);
+        },
+        child: WheelScroll4Desktop(
+          scrollController: _scrollController,
+          child: MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
+                PointerDeviceKind.touch,
+                PointerDeviceKind.mouse
+              }),
+              child: WaterfallFlow.builder(
+                physics: AlwaysScrollableScrollPhysics(),
+                controller: _scrollController,
+                gridDelegate:
+                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: isPortrait ? 1 : 2),
+                itemBuilder: (ctx, index) => _buildItem(ctx, books[index]),
+                itemCount: books.length,
+              ),
             ),
           ),
-        ),
-      )
-    );
+        ));
   }
-
 
   Widget _buildItem(BuildContext ctx, BookInfoBean infoBean) {
     var theme = Theme.of(ctx);
@@ -193,7 +184,6 @@ class _PageExploreState extends State<PageExplore> with SingleTickerProviderStat
     );
   }
 
-
   TabBarView theExploreTabView(context) {
     ThemeData theme = Theme.of(context);
     bool isPortrait =
@@ -202,14 +192,22 @@ class _PageExploreState extends State<PageExplore> with SingleTickerProviderStat
         controller: _tabController,
         children: bookListOfTabs!.map((books) {
           return Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: YColors.border_color, width: 5),
-              color: theme.cardColor,
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-            ),
-            margin: EdgeInsets.all(8),
-            child: _buildList(books, context, isPortrait)
-          );
+              decoration: BoxDecoration(
+                border: Border.all(color: YColors.border_color, width: 5),
+                color: theme.cardColor,
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+              margin: EdgeInsets.all(8),
+              child: Stack(children: [
+                _buildList(books, context, isPortrait),
+                Visibility(
+                    visible: books.isEmpty,
+                    child: Center(
+                        child: Text(
+                      '此列表暂时没有书籍',
+                      textAlign: TextAlign.center,
+                    )))
+              ]));
         }).toList());
   }
 
@@ -228,32 +226,32 @@ class _PageExploreState extends State<PageExplore> with SingleTickerProviderStat
                 Expanded(
                   child: theTopTabBar(),
                 ),
-                IconButton(
+                sourceList.length > 1 ? IconButton(
                   onPressed: () {},
                   icon: Icon(Icons.toc_outlined),
-                ),
+                ) : Row(),
               ],
             ),
-            Expanded(child: Stack(
+            Expanded(
+                child: Stack(
               children: [
                 theExploreTabView(context),
                 Visibility(
-                  visible: _selectBookId != -1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: YColors.border_color, width: 5),
-                      color: theme.colorScheme.background,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: BookDetailWidget(
-                      _selectBookId,
-                      backClick: () {
-                        _selectBookId = -1;
-                        setState(() {});
-                      },
-                    )
-                  )
-                )
+                    visible: _selectBookId != -1,
+                    child: Container(
+                        decoration: BoxDecoration(
+                          border:
+                              Border.all(color: YColors.border_color, width: 5),
+                          color: theme.colorScheme.background,
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        child: BookDetailWidget(
+                          _selectBookId,
+                          backClick: () {
+                            _selectBookId = -1;
+                            setState(() {});
+                          },
+                        )))
               ],
             ))
           ],
