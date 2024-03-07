@@ -17,19 +17,26 @@ class PageExplore extends StatefulWidget {
 }
 
 class _PageExploreState extends State<PageExplore>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   var sourceList = <BookSourceBean>[];
   TabController? _tabController;
   BookSourceBean? activeSource = null;
   List<List<String>>? tabs;
-  List<List<BookInfoBean>>? bookListOfTabs;
+  List<List<BookInfoBean>> bookListOfTabs = [];
   var _selectBookId = -1;
-  var _activeTabIdx = 0;
 
   @override
   void initState() {
     this.initLoadSourceList();
     super.initState();
+    _tabController = 
+      TabController(length: 0, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
   }
 
   void useSourceItem(int itemIdx) {
@@ -42,41 +49,51 @@ class _PageExploreState extends State<PageExplore>
     bookListOfTabs = tabs!.map((e) {
       return <BookInfoBean>[];
     }).toList();
+    _tabController?.dispose();
     _tabController =
-        TabController(length: theSourceTabs?.length ?? 1, vsync: this);
-    this.handleOnTab(0);
+        TabController(length: theSourceTabs?.length ?? 0, vsync: this);
+    _tabController?.addListener(() {
+      if(_tabController!.index != _tabController!.previousIndex) {
+        this.loadTabBookList(_tabController!.index, false);
+        if (_selectBookId != -1) {
+          _selectBookId = -1;
+          setState(() {});
+        }
+      }
+    });
+    this.loadTabBookList(0, false);
     setState(() {});
   }
 
   void initLoadSourceList() {
     ExploreHelper.getInstance().getExplorableSource().then((value) {
       if (value.length > 0) {
+        sourceList = value;
         setState(() {
-          sourceList = value;
+          if (activeSource == null) {
+            this.useSourceItem(0);
+          }
         });
-        if (activeSource == null) {
-          this.useSourceItem(0);
-        }
       }
     });
   }
 
-  handleOnTab(int tabIdx) {
-    _activeTabIdx = tabIdx;
+  loadTabBookList(int tabIdx, bool refreshList) {
     var reqOptions = BookExploreUrlBean();
     reqOptions.method = 'get';
     reqOptions.url = tabs!.toList()[tabIdx][1];
-    bookListOfTabs?[tabIdx] = [];
-    ExploreHelper.getInstance().requestExploreSection(reqOptions, (data) {
-      bookListOfTabs?[tabIdx].add(data);
-    }, () {
-      setState(() {});
-    }, activeSource!);
+    if(bookListOfTabs[tabIdx].isEmpty || refreshList == true) {
+      bookListOfTabs[tabIdx] = [];
+      ExploreHelper.getInstance().requestExploreSection(reqOptions, (data) {
+        bookListOfTabs[tabIdx].add(data);
+      }, () {
+        setState(() {});
+      }, activeSource!);
+    }
   }
 
   TabBar theTopTabBar() {
     return TabBar(
-      onTap: this.handleOnTab,
       tabAlignment: TabAlignment.start,
       tabs: tabs?.map((e) {
             return Tab(
@@ -99,7 +116,7 @@ class _PageExploreState extends State<PageExplore>
     return RefreshIndicator(
         color: YColors.primary,
         onRefresh: () async {
-          this.handleOnTab(_activeTabIdx);
+          this.loadTabBookList(_tabController?.index ?? 0, true);
         },
         child: WheelScroll4Desktop(
           scrollController: _scrollController,
@@ -190,7 +207,7 @@ class _PageExploreState extends State<PageExplore>
         MediaQuery.of(context).orientation == Orientation.portrait;
     return TabBarView(
         controller: _tabController,
-        children: bookListOfTabs!.map((books) {
+        children: bookListOfTabs.map((books) {
           return Container(
               decoration: BoxDecoration(
                 border: Border.all(color: YColors.border_color, width: 5),
