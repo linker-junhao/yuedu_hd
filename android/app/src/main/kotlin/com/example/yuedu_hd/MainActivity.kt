@@ -1,4 +1,4 @@
-package com.pudaworld.ebook
+package cn.idxstudio.ebook
 
 import io.flutter.embedding.android.FlutterActivity
 
