@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yuedu_hd/ui/YDRouter.dart';
-import 'package:yuedu_hd/ui/book_source/page_source_add.dart';
-import 'package:yuedu_hd/ui/book_source/page_source_list.dart';
+// import 'package:yuedu_hd/ui/book_source/page_source_add.dart';
+// import 'package:yuedu_hd/ui/book_source/page_source_list.dart';
 import 'package:yuedu_hd/ui/bookshelf/page_add_book.dart';
 import 'package:yuedu_hd/ui/bookshelf/page_bookshelf.dart';
 import 'package:yuedu_hd/ui/download/page_download.dart';
@@ -244,13 +244,13 @@ class HomeState extends State<HomePage> {
               YDRouter.BOOKSHELF, ModalRoute.withName(YDRouter.BOOKSHELF));
         });
         break;
-      case PAGE_SOURCE:
-        setState(() {
-          homeContainerKey.currentState?.pushNamedAndRemoveUntil(
-              YDRouter.BOOK_SOURCE_LIST,
-              ModalRoute.withName(YDRouter.BOOK_SOURCE_LIST));
-        });
-        break;
+      // case PAGE_SOURCE:
+      //   setState(() {
+      //     homeContainerKey.currentState?.pushNamedAndRemoveUntil(
+      //         YDRouter.BOOK_SOURCE_LIST,
+      //         ModalRoute.withName(YDRouter.BOOK_SOURCE_LIST));
+      //   });
+      //   break;
       case PAGE_EXPLORE:
         setState(() {
           homeContainerKey.currentState?.pushNamedAndRemoveUntil(
@@ -291,8 +291,8 @@ class HomeState extends State<HomePage> {
         initialRoute: YDRouter.BOOKSHELF,
         routes: <String, WidgetBuilder>{
           YDRouter.BOOKSHELF: (context) => PageBookShelf(),
-          YDRouter.BOOK_SOURCE_LIST: (context) => PageSourceList(),
-          YDRouter.BOOK_SOURCE_ADD: (context) => PageSourceAdd(),
+          // YDRouter.BOOK_SOURCE_LIST: (context) => PageSourceList(),
+          // YDRouter.BOOK_SOURCE_ADD: (context) => PageSourceAdd(),
           YDRouter.EXPLORE: (context) => PageExplore(),
           YDRouter.SETTINGS: (context) => PageSettings(),
           YDRouter.BOOK_ADD: (context) => PageAddBook(),
