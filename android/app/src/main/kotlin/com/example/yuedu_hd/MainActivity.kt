@@ -1,4 +1,4 @@
-package com.example.yuedu_hd
+package com.pudaworld.ebook
 
 import io.flutter.embedding.android.FlutterActivity
 
