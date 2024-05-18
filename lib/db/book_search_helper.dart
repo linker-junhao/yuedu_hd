@@ -1,9 +1,7 @@
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 
 import 'package:worker_manager/worker_manager.dart';
@@ -12,7 +10,6 @@ import 'package:yuedu_hd/db/CountLock.dart';
 import 'package:yuedu_hd/db/databaseHelper.dart';
 import 'package:reader_parser2/h_parser/h_eval_parser.dart';
 import 'package:reader_parser2/h_parser/h_parser.dart';
-import 'dart:developer' as developer;
 
 import 'BookInfoBean.dart';
 import 'utils.dart';

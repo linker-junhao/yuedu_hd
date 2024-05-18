@@ -79,7 +79,7 @@ class ExploreHelper{
     var sourceId = sourceBean.id;
     var tempTime = DateTime.now();
     print('解析探索页内容：$sourceId|$tempTime');
-    var ruleBean = source!.mapExploreRuleBean();
+    var ruleBean = source.mapExploreRuleBean();
     try{
       //填充需要传输的数据
       var kv = {
@@ -106,8 +106,8 @@ class ExploreHelper{
       print('解析探索返回内容完成：$sourceId|${DateTime.now().difference(tempTime).inMilliseconds}');
       for (var bookInfo in bookInfoList) {
         //链接修正
-        bookInfo.bookUrl = Utils.checkLink(sourceBean.bookSourceUrl!, bookInfo.bookUrl);
-        bookInfo.coverUrl = Utils.checkLink(sourceBean.bookSourceUrl!, bookInfo.coverUrl);
+        bookInfo.bookUrl = Utils.checkLink(sourceBean.bookSourceUrl, bookInfo.bookUrl);
+        bookInfo.coverUrl = Utils.checkLink(sourceBean.bookSourceUrl, bookInfo.coverUrl);
         //-------关联到书源-------------
         bookInfo.source_id = source.id;
         bookInfo.sourceBean = source;

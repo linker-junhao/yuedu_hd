@@ -1,4 +1,3 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yuedu_hd/db/BookInfoBean.dart';
@@ -112,7 +111,7 @@ class BookDetailState extends State<BookDetailWidget> {
                 children: [
                   Text(
                     bookDetail!.name!,
-                    style: theme.textTheme.headline5,
+                    style: theme.textTheme.headlineSmall,
                   ),
                   VSpace(8),
                   _buildTags(context),
@@ -323,7 +322,7 @@ class BookDetailState extends State<BookDetailWidget> {
     // for (var value in chapterList) {
     //   print(value.toString());
     // }
-    if (chapterList == null || chapterList.isEmpty) {
+    if (chapterList.isEmpty) {
       firstChapter = '目录空,请重试或换源';
     } else {
       firstChapter = chapterList[0].name!;

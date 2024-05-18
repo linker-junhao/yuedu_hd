@@ -47,7 +47,7 @@ class _StyleMenuState extends State<StyleMenu> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('滚动方向:',style: theme.textTheme.headline6,),
+                  Text('滚动方向:',style: theme.textTheme.titleLarge,),
                   HSpace(16),
                   GestureDetector(child: Icon(CupertinoIcons.square_split_1x2_fill,size: 40,color: isVerticalScroll?theme.primaryColor:theme.canvasColor,),onTap: (){
                     config.isVertical = 1;
@@ -64,7 +64,7 @@ class _StyleMenuState extends State<StyleMenu> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('内容布局:',style: theme.textTheme.headline6,),
+                  Text('内容布局:',style: theme.textTheme.titleLarge,),
                   HSpace(16),
                   GestureDetector(child: Icon(CupertinoIcons.rectangle_fill,size: 40,color: !isTwoPage?theme.primaryColor:theme.canvasColor,),onTap: (){
                     config.isSinglePage = 1;
@@ -78,7 +78,7 @@ class _StyleMenuState extends State<StyleMenu> {
                 ],
               ),
               Divider(),
-              Text('颜色:',style: theme.textTheme.headline6,),
+              Text('颜色:',style: theme.textTheme.titleLarge,),
               VSpace(8),
               Container(
                 height: 40,
@@ -88,7 +88,7 @@ class _StyleMenuState extends State<StyleMenu> {
               Divider(),
               Row(
                 children: [
-                  Text('正文:',style: theme.textTheme.headline6,),
+                  Text('正文:',style: theme.textTheme.titleLarge,),
                   IconButton(icon: Icon(CupertinoIcons.minus_circle), onPressed: (){
                     config.textSize = config.textSize - 1;
                     _notifyStyleChanged();
@@ -102,7 +102,7 @@ class _StyleMenuState extends State<StyleMenu> {
               ),
               Row(
                 children: [
-                  Text('标题:',style: theme.textTheme.headline6,),
+                  Text('标题:',style: theme.textTheme.titleLarge,),
                   IconButton(icon: Icon(CupertinoIcons.minus_circle), onPressed: (){
                     config.titleSize = config.titleSize - 1;
                     _notifyStyleChanged();

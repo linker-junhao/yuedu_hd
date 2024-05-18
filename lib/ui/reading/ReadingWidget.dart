@@ -1,7 +1,6 @@
 
 import 'dart:collection';
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
@@ -231,7 +230,7 @@ class _ReadingWidgetState extends State<ReadingWidget> {
           errorTips = "目录加载失败，请重试或换源";
         });
       });
-      if(chaptersList == null || chaptersList.isEmpty){
+      if(chaptersList.isEmpty){
         setState(() {
           errorTips = "目录加载失败，请重试或换源";
         });
@@ -283,7 +282,7 @@ class _ReadingWidgetState extends State<ReadingWidget> {
       });
     });
     //失败?
-    if(chapterContent == null || chapterContent.isEmpty){
+    if(chapterContent.isEmpty){
       return Future.value(-1);
     }
     //-----------------------成功开始分页,制造显示页面---------------------
@@ -400,7 +399,7 @@ class _ReadingWidgetState extends State<ReadingWidget> {
     }
 
     //如果是章节第一页，加载前一章
-    if(displayPage!=null && displayPage.currPage == 1){//第一页,加载上一章节
+    if(displayPage.currPage == 1){//第一页,加载上一章节
       var tempPage = DisplayCache.getInstance().get(index-1);
       if(tempPage==null){
         //没有缓存加载
@@ -411,7 +410,7 @@ class _ReadingWidgetState extends State<ReadingWidget> {
     }
     print('page->${displayPage.currPage}/${displayPage.maxPage}');
     //如果是章节最后一页，加载后一章
-    if(displayPage!=null && displayPage.currPage == displayPage.maxPage){//最后一页,加载下一章节
+    if(displayPage.currPage == displayPage.maxPage){//最后一页,加载下一章节
       var tempPage = DisplayCache.getInstance().get(index+1);
       if(tempPage==null){
         //没有缓存加载

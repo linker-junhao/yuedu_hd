@@ -1,11 +1,9 @@
-import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 import 'package:yuedu_hd/db/BookShelfBean.dart';
 import 'package:yuedu_hd/db/book_toc_helper.dart';
@@ -68,7 +66,7 @@ class _PageBookShelfState extends State<PageBookShelf>
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                     unselectedLabelStyle:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    labelColor: theme.textTheme.headline6!.color,
+                    labelColor: theme.textTheme.titleLarge!.color,
                   ),
                 ),
                 PopupMenuButton(

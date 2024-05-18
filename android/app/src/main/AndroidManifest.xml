@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name="${applicationName}"
-        android:label="PUPU文学"
+        android:label="扑哒小说"
         android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher">
         <activity

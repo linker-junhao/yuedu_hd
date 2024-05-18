@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -21,16 +20,7 @@ class FadeInImageWithoutAuth extends StatefulWidget {
     this.alignment = Alignment.center,
     this.repeat = ImageRepeat.noRepeat,
     this.matchTextDirection = false,
-  }) : assert(placeholder != null),
-        assert(image != null),
-        assert(fadeOutDuration != null),
-        assert(fadeOutCurve != null),
-        assert(fadeInDuration != null),
-        assert(fadeInCurve != null),
-        assert(alignment != null),
-        assert(repeat != null),
-        assert(matchTextDirection != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// Creates a widget that uses a placeholder image stored in memory while
   /// loading the final image from the network.
@@ -69,18 +59,7 @@ class FadeInImageWithoutAuth extends StatefulWidget {
     this.alignment = Alignment.center,
     this.repeat = ImageRepeat.noRepeat,
     this.matchTextDirection = false,
-  }) : assert(placeholder != null),
-        assert(image != null),
-        assert(placeholderScale != null),
-        assert(imageScale != null),
-        assert(fadeOutDuration != null),
-        assert(fadeOutCurve != null),
-        assert(fadeInDuration != null),
-        assert(fadeInCurve != null),
-        assert(alignment != null),
-        assert(repeat != null),
-        assert(matchTextDirection != null),
-        placeholder = MemoryImage(placeholder, scale: placeholderScale),
+  }) : placeholder = MemoryImage(placeholder, scale: placeholderScale),
         image = NetworkImage(image, scale: imageScale),
         super(key: key);
 
@@ -124,21 +103,7 @@ class FadeInImageWithoutAuth extends StatefulWidget {
     this.alignment = Alignment.center,
     this.repeat = ImageRepeat.noRepeat,
     this.matchTextDirection = false,
-  }) : assert(placeholder != null),
-        assert(image != null),
-        // placeholder = placeholderScale != null
-        // placeholder = ExactAssetImage(placeholder, bundle: bundle, scale: placeholderScale??0),
-        //     : NetworkImageWithoutAuth(placeholder),
-        // placeholder = ExactAssetImage(placeholder, bundle: bundle, scale: placeholderScale!),
-        placeholder = NetworkImageWithoutAuth(placeholder),
-        assert(imageScale != null),
-        assert(fadeOutDuration != null),
-        assert(fadeOutCurve != null),
-        assert(fadeInDuration != null),
-        assert(fadeInCurve != null),
-        assert(alignment != null),
-        assert(repeat != null),
-        assert(matchTextDirection != null),
+  }) : placeholder = NetworkImageWithoutAuth(placeholder),
         image = NetworkImageWithoutAuth(image, scale: imageScale),
         super(key: key);
 
@@ -421,7 +386,6 @@ class _FadeInImageState extends State<FadeInImageWithoutAuth> with TickerProvide
   }
 
   bool get _isShowingPlaceholder {
-    assert(_phase != null);
     switch (_phase) {
       case FadeInImagePhase.start:
       case FadeInImagePhase.waiting:

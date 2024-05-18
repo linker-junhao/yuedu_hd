@@ -2,7 +2,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 final Color darkBlue = Color.fromARGB(255, 18, 32, 47);
 typedef PopupMenuStateChanged = Function(bool isShow);
@@ -60,10 +59,8 @@ class PopupMenu {
     this.stateChanged = stateChanged;
     this.child = child;
     this._backgroundColor = backgroundColor ?? Color(0xff232323);
-    if (context != null) {
-      PopupMenu.context = context;
+    PopupMenu.context = context;
     }
-  }
 
   void show({Rect? rect, GlobalKey? widgetKey, Widget? child}) {
     if (rect == null && widgetKey == null) {
@@ -83,7 +80,7 @@ class PopupMenu {
       return buildPopupMenuLayout(_offset!);
     });
 
-    Overlay.of(PopupMenu.context)?.insert(_entry!);
+    Overlay.of(PopupMenu.context).insert(_entry!);
     _isShow = true;
     if (this.stateChanged != null) {
       this.stateChanged!(true);

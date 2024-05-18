@@ -1,7 +1,6 @@
 
 
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yuedu_hd/db/databaseHelper.dart';
 import 'package:yuedu_hd/ui/reading/DisplayConfig.dart';
@@ -25,39 +24,29 @@ class _MoreStyleSettingsMenuState extends State<MoreStyleSettingsMenu> {
       children: [
         ListTile(title: Text('页边距 左'),subtitle:Text('阅读页面和四周的边距'),trailing: Text('${config.marginLeft}dp'),onTap: () async{
           int result = await showDialog(context: context,builder: (_)=>NumberPicker.integer(minValue: 0, maxValue: 200, initialValue: config.marginLeft));
-          if(result!=null){
-            config.marginLeft = result.toDouble();
-            _saveConfig();
-          }
-        },),
+          config.marginLeft = result.toDouble();
+          _saveConfig();
+                },),
         ListTile(title: Text('页边距 右'),subtitle:Text('阅读页面和四周的边距'),trailing: Text('${config.marginRight}dp'),onTap: () async{
           int result = await showDialog(context: context,builder: (_)=>NumberPicker.integer(minValue: 0, maxValue: 200, initialValue: config.marginRight));
-          if(result!=null){
-            config.marginRight = result.toDouble();
-            _saveConfig();
-          }
-        },),
+          config.marginRight = result.toDouble();
+          _saveConfig();
+                },),
         ListTile(title: Text('页边距 上'),subtitle:Text('阅读页面和四周的边距'),trailing: Text('${config.marginTop}dp'),onTap: () async{
           int result = await showDialog(context: context,builder: (_)=>NumberPicker.integer(minValue: 0, maxValue: 300, initialValue: config.marginTop));
-          if(result!=null){
-            config.marginTop = result.toDouble();
-            _saveConfig();
-          }
-        },),
+          config.marginTop = result.toDouble();
+          _saveConfig();
+                },),
         ListTile(title: Text('页边距 下'),subtitle:Text('阅读页面和四周的边距'),trailing: Text('${config.marginBottom}dp'),onTap: () async{
           int result = await showDialog(context: context,builder: (_)=>NumberPicker.integer(minValue: 0, maxValue: 100, initialValue: config.marginBottom));
-          if(result!=null){
-            config.marginBottom = result.toDouble();
-            _saveConfig();
-          }
-        },),
+          config.marginBottom = result.toDouble();
+          _saveConfig();
+                },),
         ListTile(title: Text('标题和正文间距'),subtitle:Text('标题和正文之间的留白'),trailing: Text('${config.titleMargin}dp'),onTap: () async{
           int result = await showDialog(context: context,builder: (_)=>NumberPicker.integer(minValue: 0, maxValue: 100, initialValue: config.titleMargin));
-          if(result!=null){
-            config.titleMargin = result.toDouble();
-            _saveConfig();
-          }
-        },),
+          config.titleMargin = result.toDouble();
+          _saveConfig();
+                },),
         ListTile(title: Text('行间距'),subtitle:Text('正文行距，缩放倍数1为基准'),trailing: Text('${config.lineSpace}'),onTap: () async{
           var result = await showDialog(context: context,builder: (_)=>NumberPicker.decimal(minValue: 0.8, maxValue: 3, initialValue: config.lineSpace));
           if(result!=null){

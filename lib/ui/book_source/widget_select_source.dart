@@ -54,7 +54,7 @@ class _WidgetSelectSourceState extends State<WidgetSelectSource> {
           children: [
             Row(
               children: [
-                TextButton.icon(icon: Icon(_searching?Icons.stop:CupertinoIcons.refresh,size: 18,),label: Text(_searching?'终止搜索书源':'重新搜索书源',style: theme.textTheme.bodyText1,),onPressed: (){
+                TextButton.icon(icon: Icon(_searching?Icons.stop:CupertinoIcons.refresh,size: 18,),label: Text(_searching?'终止搜索书源':'重新搜索书源',style: theme.textTheme.bodyLarge,),onPressed: (){
                   _fetchMoreSource();
                 },),
                 Spacer(),

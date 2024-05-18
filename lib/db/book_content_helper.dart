@@ -101,7 +101,7 @@ class BookContentHelper{
           bookUrl = null;
         }
       }
-      if(content==null || content.isEmpty){
+      if(content.isEmpty){
         throw Exception('正文请求成功 解析失败');
       }
       if(chapterId > 0){

@@ -1,8 +1,4 @@
-import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:yuedu_hd/ui/YDRouter.dart';
 import 'package:yuedu_hd/ui/book_source/page_source_add.dart';
 import 'package:yuedu_hd/ui/book_source/page_source_list.dart';
@@ -13,7 +9,6 @@ import 'package:yuedu_hd/ui/explore/page_explore.dart';
 import 'package:yuedu_hd/ui/settings/page_settings.dart';
 import 'package:yuedu_hd/ui/store/page_store.dart';
 import 'package:yuedu_hd/ui/widget/space.dart';
-import 'dart:io';
 
 class HomePage extends StatefulWidget {
   @override
@@ -50,7 +45,7 @@ class HomeState extends State<HomePage> {
         Theme.of(context).platform == TargetPlatform.macOS;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: themeData.backgroundColor,
+      backgroundColor: themeData.colorScheme.background,
       body: OrientationBuilder(
         builder: (context, orientation) {
           if (orientation == Orientation.landscape) {
@@ -139,12 +134,12 @@ class HomeState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "PUPU",
-                style: themeData.textTheme.headline4,
+                "PUDA",
+                style: themeData.textTheme.headlineMedium,
               ),
               HSpace(4),
               Text(
-                "文学",
+                "小说",
                 style: TextStyle(fontSize: 18),
               )
             ],
@@ -365,7 +360,7 @@ class _HomeMenuItem extends StatelessWidget {
               child: Text(
             text,
             style: TextStyle(
-                fontSize: themeData.textTheme.headline5!.fontSize,
+                fontSize: themeData.textTheme.headlineSmall!.fontSize,
                 color: isSelected ? themeData.primaryColor : null),
           )),
         ],

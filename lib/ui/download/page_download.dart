@@ -1,5 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yuedu_hd/ui/download/BookDownloader.dart';
 
@@ -13,7 +12,7 @@ class PageDownLoad extends StatelessWidget{
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('下载队列',style: Theme.of(context).textTheme.subtitle1,),
+            Text('下载队列',style: Theme.of(context).textTheme.titleMedium,),
             Divider(),
             Container(child: DownloadInfoWidget()),
           ],
@@ -49,7 +48,7 @@ class _DownloadInfoWidgetState extends State<DownloadInfoWidget> {
   Widget build(BuildContext context) {
     var isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     if(downloader.chapters.isEmpty){
-      return Container(child: Center(child: Text('没有下载任务...',style: Theme.of(context).textTheme.headline4,)));
+      return Container(child: Center(child: Text('没有下载任务...',style: Theme.of(context).textTheme.headlineMedium,)));
     }
     return Column(
       children: [
@@ -57,7 +56,7 @@ class _DownloadInfoWidgetState extends State<DownloadInfoWidget> {
           padding: EdgeInsets.all(isLandscape?16:4),
           child: Row(
             children: [
-              Expanded(child: Text('${downloader.bookInfoBean!.name} 待缓存章节: ${downloader.chapters.length}',style: isLandscape?Theme.of(context).textTheme.headline5:null,)),
+              Expanded(child: Text('${downloader.bookInfoBean!.name} 待缓存章节: ${downloader.chapters.length}',style: isLandscape?Theme.of(context).textTheme.headlineSmall:null,)),
               IconButton(icon: Icon(Icons.stop), onPressed: (){
                 downloader.stop();
               })

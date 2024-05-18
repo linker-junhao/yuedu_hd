@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -10,9 +9,7 @@ class NetworkImageWithoutAuth extends ImageProvider<NetworkImageWithoutAuth> {
   /// Creates an object that fetches the image at the given URL.
   ///
   /// The arguments must not be null.
-  const NetworkImageWithoutAuth(this.url, {this.scale = 1.0, this.headers})
-      : assert(url != null),
-        assert(scale != null);
+  const NetworkImageWithoutAuth(this.url, {this.scale = 1.0, this.headers});
 
   /// The URL from which the image will be fetched.
   final String url;
@@ -54,7 +51,7 @@ class NetworkImageWithoutAuth extends ImageProvider<NetworkImageWithoutAuth> {
     if (bytes.lengthInBytes == 0)
       throw Exception('NetworkImage is an empty file');
 
-    return PaintingBinding.instance!.instantiateImageCodecWithSize(await ImmutableBuffer.fromUint8List(bytes));
+    return PaintingBinding.instance.instantiateImageCodecWithSize(await ImmutableBuffer.fromUint8List(bytes));
   }
 
   @override

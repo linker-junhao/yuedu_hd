@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:yuedu_hd/db/BookInfoBean.dart';
 import 'package:yuedu_hd/db/book_search_helper.dart';
 import 'package:yuedu_hd/ui/bookshelf/widget_book_detail.dart';
-import 'package:yuedu_hd/ui/widget/image_async.dart';
 import 'package:yuedu_hd/ui/widget/space.dart';
 
 class PageAddBook extends StatefulWidget {
