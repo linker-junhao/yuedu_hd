@@ -41,7 +41,7 @@ dynamic loadBookRules() async {
   try {
     var bookRuleUrl = 'https://www.idxstudio.cn/ebook/ajax/reader-rules';
     if (!kReleaseMode) {
-      bookRuleUrl = 'http://dev.linker.lkr:8083/ajax/reader-rules';
+      // bookRuleUrl = 'http://dev.linker.lkr:8083/ajax/reader-rules';
     }
     var req = await Dio(BaseOptions(responseType: ResponseType.plain))
         .get(bookRuleUrl);

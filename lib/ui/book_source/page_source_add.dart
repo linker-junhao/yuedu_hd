@@ -25,7 +25,7 @@ class _PageSourceAddState extends State<PageSourceAdd> {
     super.initState();
     _textEditingController = TextEditingController();
     if(!kReleaseMode){
-      _textEditingController.text = 'http://dev.linker.lkr:8083/ajax/reader-rules';
+      // _textEditingController.text = 'http://dev.linker.lkr:8083/ajax/reader-rules';
     }
   }
 
