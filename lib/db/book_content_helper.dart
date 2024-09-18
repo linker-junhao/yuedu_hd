@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -12,103 +10,118 @@ import 'package:yuedu_hd/db/utils.dart';
 import 'dart:developer' as developer;
 import 'package:reader_parser2/h_parser/h_parser.dart';
 
-
-
 ///正文解析
-class BookContentHelper{
+class BookContentHelper {
   static BookContentHelper? _instance;
-  static BookContentHelper getInstance(){
-    if(_instance == null){
+  static BookContentHelper getInstance() {
+    if (_instance == null) {
       _instance = BookContentHelper._init();
     }
     return _instance!;
   }
-  BookContentHelper._init(){
+
+  BookContentHelper._init() {
     //pass
   }
 
   ///根据章节id获取内容，优先数据库获取，没有缓存从网络获取 [nextChapterId]用来判断内容分页，有些下一页就是下一章节
-  Future<String> getChapterContent(int chapterId,int? nextChapterId,{bool refreshCache = false}) async{
+  Future<String> getChapterContent(int chapterId, int? nextChapterId,
+      {bool refreshCache = false}) async {
     developer.log('企图获取章节内容 $chapterId');
     var contentFromDB = await DatabaseHelper().queryChapterContent(chapterId);
-    if(contentFromDB.isNotEmpty && !refreshCache){
+    if (contentFromDB.isNotEmpty && !refreshCache) {
       return Future.value(contentFromDB);
     }
-    return fetchContentFromNetwork(chapterId,nextChapterId);
-
+    return fetchContentFromNetwork(chapterId, nextChapterId);
   }
 
-  Future<String> fetchContentFromNetwork(int chapterId,int? nextChapterId,{BookSourceBean? sourceBean,String? chapterUrl,String? nextChapterUrl}) async{
+  Future<String> fetchContentFromNetwork(int chapterId, int? nextChapterId,
+      {BookSourceBean? sourceBean,
+      String? chapterUrl,
+      String? nextChapterUrl}) async {
     BookSourceBean source;
-    if(sourceBean == null){
+    if (sourceBean == null) {
       source = await DatabaseHelper().queryBookSourceByChapterId(chapterId);
-    }else{
+    } else {
       source = sourceBean;
     }
     String? bookUrl;
-    if(chapterUrl == null){
+    if (chapterUrl == null) {
       bookUrl = await DatabaseHelper().queryChapterUrl(chapterId);
-    }else{
+    } else {
       bookUrl = chapterUrl;
     }
     String? nextBookUrl;
-    if(nextChapterUrl == null){
-      if(nextChapterId!=null){
+    if (nextChapterUrl == null) {
+      if (nextChapterId != null) {
         nextBookUrl = await DatabaseHelper().queryChapterUrl(nextChapterId);
       }
-    }else{
+    } else {
       nextBookUrl = nextChapterUrl;
     }
 
     var contentRule = source.mapContentRuleBean();
     //请求网络
     var charset = source.mapSearchUrlBean()!.charset;
-    Options requestOptions = Options(contentType:ContentType.html.toString() ,sendTimeout: 10000,receiveTimeout: 10000);
+    Options requestOptions = Options(
+        contentType: ContentType.html.toString(),
+        sendTimeout: 10000,
+        receiveTimeout: 10000);
     // if(charset == 'gbk'){
-      requestOptions.responseDecoder = Utils.gbkDecoder;
+    requestOptions.responseDecoder = Utils.gbkDecoder;
     // }
     var content = "";
-    try{
+    try {
       var counter = 0;
-      while(bookUrl!=null){
-        counter ++;
-        if(counter > 40){
+      while (bookUrl != null) {
+        counter++;
+        if (counter > 40) {
           throw Exception('正文分页超过40页');
         }
         String? htmlString = await _request(requestOptions, bookUrl);
-        if(htmlString == null || htmlString.isEmpty){
+        if (htmlString == null || htmlString.isEmpty) {
           throw Exception('正文请求失败 null');
         }
         //解析内容
-        String? c = await Executor().execute(arg1: bookUrl,arg2: htmlString,arg3: contentRule,fun3: parseContent);
-        String cNotEmpty = c??"";
-        developer.log('完成解析正文 $bookUrl -> ${cNotEmpty.substring(0,min(100, cNotEmpty.length))}...');
+        String? c = await Executor().execute(
+            arg1: bookUrl,
+            arg2: htmlString,
+            arg3: contentRule,
+            fun3: parseContent);
+        String cNotEmpty = c ?? "";
+        developer.log(
+            '完成解析正文 $bookUrl -> ${cNotEmpty.substring(0, min(100, cNotEmpty.length))}...');
         content += cNotEmpty;
         //解析下一页
-        if(contentRule.nextContentUrl!=null && contentRule.nextContentUrl!.isNotEmpty){
-          String? nextUrl = await Executor().execute(arg1: bookUrl,arg2: htmlString,arg3: contentRule.nextContentUrl!,fun3: parseNextPage);
-          if(nextUrl == null || nextUrl.trim().isEmpty || nextUrl == "null"){
+        if (contentRule.nextContentUrl != null &&
+            contentRule.nextContentUrl!.isNotEmpty) {
+          String? nextUrl = await Executor().execute(
+              arg1: bookUrl,
+              arg2: htmlString,
+              arg3: contentRule.nextContentUrl!,
+              fun3: parseNextPage);
+          if (nextUrl == null || nextUrl.trim().isEmpty || nextUrl == "null") {
             bookUrl = null;
-          }else{
+          } else {
             bookUrl = Utils.checkLink(bookUrl, nextUrl);
             developer.log('下一页链接 $bookUrl');
             //下一页就是下一章，不获取数据
-            if(bookUrl == nextBookUrl){
+            if (bookUrl == nextBookUrl) {
               bookUrl = null;
             }
           }
-        }else{
+        } else {
           bookUrl = null;
         }
       }
-      if(content.isEmpty){
+      if (content.isEmpty) {
         throw Exception('正文请求成功 解析失败');
       }
-      if(chapterId > 0){
+      if (chapterId > 0) {
         await DatabaseHelper().updateChapterContent(chapterId, content);
       }
       return Future.value(content);
-    }catch(e){
+    } catch (e) {
       developer.log('正文获取异常 $e');
       return Future.error(e);
     }
@@ -116,44 +129,83 @@ class BookContentHelper{
     return Future.value(null);
   }
 
-  Future<String?> _request(Options requestOptions,String bookUrl) async{
-    try{
-      var headers = Utils.buildHeaders(bookUrl,ContentType.html.toString(), requestOptions.headers);
+  Future<String?> _request(Options requestOptions, String bookUrl) async {
+    try {
+      var headers = Utils.buildHeaders(
+          bookUrl, ContentType.html.toString(), requestOptions.headers);
       requestOptions.headers = headers;
       developer.log('正文请求 $bookUrl,$headers');
       var dio = Utils.createDioClient();
-      var response = await dio.get(bookUrl,options: requestOptions);
-      if(response.statusCode == 200) {
+      var response = await dio.get(bookUrl, options: requestOptions);
+      if (response.statusCode == 200) {
         return Future.value(response.data);
-      }else{
+      } else {
         developer.log('正文请求失败[${response.statusCode}] $bookUrl');
-        return Future.error(Exception('正文请求失败[${response.statusCode}] $bookUrl'));
+        return Future.error(
+            Exception('正文请求失败[${response.statusCode}] $bookUrl'));
       }
-    }catch(e){
+    } catch (e) {
       developer.log('正文请求错误[$bookUrl]:$e');
       return Future.error(Exception('正文请求错误[$bookUrl]:$e'));
     }
     return Future.value(null);
   }
-
 }
 
-FutureOr<String?> parseContent(String url,String html,BookContentRuleBean rule, TypeSendPort sendPort){
-  developer.log('开始解析正文 $rule');
-  var parser = HParser(html);
-  var content = parser.parseRuleString(rule.content);
-  if(rule.replaceRegex == null || rule.replaceRegex!.isEmpty){
-    parser.destory();
-    return content??"";
+FutureOr<String?> parseContent(
+    String url, String html, BookContentRuleBean rule, TypeSendPort sendPort) {
+  var trimedResStr = html.trim();
+  if (trimedResStr.isEmpty) {
+    return '';
   }
-  parser.destory();
-  return HParser.parseReplaceRule(content??"",rule.replaceRegex!);
+  // handle json type content
+
+  if (RegExp(r'^(\{|\[)').hasMatch(trimedResStr) &&
+      RegExp(r'(\}|\])$').hasMatch(trimedResStr)) {
+    var content = Utils.parseFromJsonPath(rule.content, trimedResStr)
+        .map((e) => e.value)
+        .join('\n');
+    return content;
+  } else {
+    developer.log('开始解析正文 $rule');
+    var parser = HParser(html);
+    var content = parser.parseRuleString(rule.content);
+    if (rule.replaceRegex == null || rule.replaceRegex!.isEmpty) {
+      parser.destory();
+      return content ?? "";
+    }
+    parser.destory();
+    return HParser.parseReplaceRule(content ?? "", rule.replaceRegex!);
+  }
 }
 
-FutureOr<String?> parseNextPage(String url,String html,String next, TypeSendPort sendPort){
-  developer.log('解析下一页的链接 rule->$next');
-  var parser = HParser(html);
-  var result = parser.parseRuleStrings(next);
-  parser.destory();
-  return result.isNotEmpty?result[0]:"";
+FutureOr<String?> parseNextPage(
+    String url, String html, String next, TypeSendPort sendPort) {
+  var trimedResStr = html.trim();
+  if (trimedResStr.isEmpty) {
+    return '';
+  }
+  // handle json type content
+  if (RegExp(r'^(\{|\[)').hasMatch(trimedResStr) &&
+      RegExp(r'(\}|\])$').hasMatch(trimedResStr)) {
+    return RegExp(r'^\$\.').hasMatch(next ?? "")
+          ? Utils.parseFromJsonPath(next, trimedResStr)
+              .first
+              .value
+              .toString()
+          : next.replaceAllMapped(RegExp(r"\{[^\{\}]*\}"), (match) {
+          var path = match[0]?.substring(1, match[0]!.length-1) ?? "";
+          return Utils.parseFromJsonPath(path, trimedResStr)
+              .first
+              .value
+              .toString();
+        }) ??
+        "";
+  } else {
+    developer.log('解析下一页的链接 rule->$next');
+    var parser = HParser(html);
+    var result = parser.parseRuleStrings(next);
+    parser.destory();
+    return result.isNotEmpty ? result[0] : "";
+  }
 }

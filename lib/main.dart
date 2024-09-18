@@ -39,9 +39,9 @@ var loadRetryCount = 0;
 dynamic loadBookRules() async {
   loadRetryCount += 1;
   try {
-    var bookRuleUrl = 'https://www.idxstudio.cn/ebook/ajax/reader-rules';
+    var bookRuleUrl = 'https://www.pudaworld.com/ebook/ajax/reader-rules';
     if (!kReleaseMode) {
-      // bookRuleUrl = 'http://dev.linker.lkr:8083/ajax/reader-rules';
+      bookRuleUrl = 'http://localhost:8083/ajax/reader-rules';
     }
     var req = await Dio(BaseOptions(responseType: ResponseType.plain))
         .get(bookRuleUrl);

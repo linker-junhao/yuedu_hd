@@ -1,11 +1,34 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:fast_gbk/fast_gbk.dart';
+import 'package:json_path/json_path.dart';
 
 class Utils{
   Utils._();
+
+  static Iterable<JsonPathMatch> parseFromJsonPath(String? jsonPathExpParam, String jsonContent) {
+    var jsonPathExp = jsonPathExpParam ?? "";
+    if(jsonPathExp == "") {
+      var tmpPath = JsonPath(r'$.data');
+      return tmpPath.read({ "data": "" });
+    }
+    var jsonPathParser = JsonPath(jsonPathExp);
+    var jsonObj = jsonDecode(jsonContent);
+    return jsonPathParser.read(jsonObj);
+  }
+
+  static Iterable<JsonPathMatch> parseObjByJsonPath(String? jsonPathExpParam, Object jsonObj) {
+     var jsonPathExp = jsonPathExpParam ?? "";
+    if(jsonPathExp == "") {
+      var tmpPath = JsonPath(r'$.data');
+      return tmpPath.read({ "data": "" });
+    }
+    var jsonPathParser = JsonPath(jsonPathExp);
+    return jsonPathParser.read(jsonObj);
+  }
 
   static String gbkDecoder(List<int> responseBytes, RequestOptions options, ResponseBody responseBody) {
     var type = responseBody.headers["content-type"].toString();
