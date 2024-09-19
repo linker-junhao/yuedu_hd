@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
-import 'package:dio/adapter.dart';
-import 'package:dio/adapter_browser.dart';
+import 'package:dio/browser.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:fast_gbk/fast_gbk.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_path/json_path.dart';
@@ -127,19 +128,22 @@ class Utils {
 
   static Dio createDioClient() {
     var dio = Dio(BaseOptions(
-        connectTimeout: 15000,
-        receiveTimeout: 5000,
-        sendTimeout: 5000,
+        connectTimeout: Duration(milliseconds: 15000),
+        receiveTimeout: Duration(milliseconds: 5000),
+        sendTimeout: Duration(milliseconds: 5000),
         responseType: ResponseType.plain,
         followRedirects: true));
     if (kIsWeb) {
       dio.httpClientAdapter = BrowserHttpClientAdapter();
     } else {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
-        client.badCertificateCallback = (cert, host, port) {
-          return true;
-        };
-      };
+      dio.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
+        // Don't trust any certificate just because their root cert is trusted.
+        final HttpClient client =
+            HttpClient(context: SecurityContext(withTrustedRoots: false));
+        // You can test the intermediate / root cert here. We just ignore it.
+        client.badCertificateCallback = (cert, host, port) => true;
+        return client;
+      });
     }
     dio.options.responseType = ResponseType.plain;
     return dio;

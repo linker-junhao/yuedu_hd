@@ -31,7 +31,8 @@ void main() async {
   //   DeviceOrientation.landscapeRight
   // ]);
   // SystemChrome.setEnabledSystemUIOverlays([]);
-  await Executor().warmUp(log: true);
+  workerManager.log = true;
+  await workerManager.init();
   loadBookRules();
   runApp(MyApp());
 }

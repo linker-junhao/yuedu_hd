@@ -36,9 +36,9 @@ dependencies:
   #数据库
   sqflite: ^2.0.0+3
   #网络请求
-  dio: 4.0.0
+  dio: ^5.7.0
   # 线程管理
-  worker_manager: ^4.2.2
+  worker_manager: ^7.1.1
   # 可拖动的scrollbar
   draggable_scrollbar: ^0.1.0
   # gridView
@@ -52,7 +52,7 @@ dependencies:
   #isolate
   isolate: ^2.1.1
   #webview 只支持mobile
-  webview_flutter: ^2.1.1
+  webview_flutter: ^4.8.0
   #扩展的图片，用来支持本地缓存
   extended_image: ^8.2.0
   flutter_test:

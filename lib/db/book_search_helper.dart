@@ -108,8 +108,8 @@ class BookSearchHelper {
     Options requestOptions = Options(
         method: options.method,
         headers: headers,
-        sendTimeout: 5000,
-        receiveTimeout: 5000,
+        sendTimeout: Duration(milliseconds: 5000),
+        receiveTimeout: Duration(milliseconds: 5000),
         followRedirects: true);
     if (options.charset == 'gbk') {
       options.url = UrlGBKEncode().encode(options.url);
@@ -117,7 +117,7 @@ class BookSearchHelper {
     }
     requestOptions.responseDecoder = Utils.gbkDecoder;
     try {
-      dio.options.connectTimeout = 10000;
+      dio.options.connectTimeout = Duration(milliseconds: 10000);
       print('搜索书籍:$options,$headers');
       var response = await dio
           .request(options.url!, options: requestOptions, data: options.body)
@@ -189,7 +189,7 @@ class BookSearchHelper {
       print(
           '解析搜索返回内容开始：$sourceId|${DateTime.now().difference(tempTime).inMilliseconds}');
       //用线程池执行解析，大概需要400ms
-      var tmp = await Executor().execute(arg1: kv, fun1: _parse);
+      var tmp = await workerManager.execute(() async => await _parse(kv));
       print(
           '解析搜索返回内容结束：$sourceId|${DateTime.now().difference(tempTime).inMilliseconds}');
       List<BookInfoBean> bookInfoList = [];
@@ -234,7 +234,7 @@ class BookSearchHelper {
 }
 
 FutureOr<dynamic> _parse(
-    Map<String, String?> map, TypeSendPort<dynamic> sendPort) {
+    Map<String, String?> map) {
   String response = map['response']!;
   String baseUrl = map['baseUrl']!;
   BookSearchRuleBean ruleBean = BookSearchRuleBean();

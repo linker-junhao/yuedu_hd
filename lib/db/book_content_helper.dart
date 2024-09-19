@@ -64,8 +64,8 @@ class BookContentHelper {
     var charset = source.mapSearchUrlBean()!.charset;
     Options requestOptions = Options(
         contentType: ContentType.html.toString(),
-        sendTimeout: 10000,
-        receiveTimeout: 10000);
+        sendTimeout: Duration(milliseconds: 10000),
+        receiveTimeout: Duration(milliseconds: 10000));
     // if(charset == 'gbk'){
     requestOptions.responseDecoder = Utils.gbkDecoder;
     // }
@@ -82,11 +82,10 @@ class BookContentHelper {
           throw Exception('正文请求失败 null');
         }
         //解析内容
-        String? c = await Executor().execute(
-            arg1: bookUrl,
-            arg2: htmlString,
-            arg3: contentRule,
-            fun3: parseContent);
+        String? c = await workerManager.execute(() async {
+            // Your CPU-intensive function here
+            return await parseContent(bookUrl!, htmlString, contentRule);
+          }, priority: WorkPriority.immediately);
         String cNotEmpty = c ?? "";
         developer.log(
             '完成解析正文 $bookUrl -> ${cNotEmpty.substring(0, min(100, cNotEmpty.length))}...');
@@ -94,11 +93,10 @@ class BookContentHelper {
         //解析下一页
         if (contentRule.nextContentUrl != null &&
             contentRule.nextContentUrl!.isNotEmpty) {
-          String? nextUrl = await Executor().execute(
-              arg1: bookUrl,
-              arg2: htmlString,
-              arg3: contentRule.nextContentUrl!,
-              fun3: parseNextPage);
+          String? nextUrl = await workerManager.execute(() async {
+            // Your CPU-intensive function here
+            return await parseNextPage(bookUrl!, htmlString, contentRule.nextContentUrl!);
+          }, priority: WorkPriority.immediately);
           if (nextUrl == null || nextUrl.trim().isEmpty || nextUrl == "null") {
             bookUrl = null;
           } else {
@@ -152,7 +150,7 @@ class BookContentHelper {
 }
 
 FutureOr<String?> parseContent(
-    String url, String html, BookContentRuleBean rule, TypeSendPort sendPort) {
+    String url, String html, BookContentRuleBean rule) {
   var trimedResStr = html.trim();
   if (trimedResStr.isEmpty) {
     return '';
@@ -169,7 +167,7 @@ FutureOr<String?> parseContent(
 }
 
 FutureOr<String?> parseNextPage(
-    String url, String html, String next, TypeSendPort sendPort) {
+    String url, String html, String next) {
   var trimedResStr = html.trim();
   if (trimedResStr.isEmpty) {
     return '';

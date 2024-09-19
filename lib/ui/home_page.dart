@@ -7,7 +7,6 @@ import 'package:yuedu_hd/ui/bookshelf/page_bookshelf.dart';
 import 'package:yuedu_hd/ui/download/page_download.dart';
 import 'package:yuedu_hd/ui/explore/page_explore.dart';
 import 'package:yuedu_hd/ui/settings/page_settings.dart';
-import 'package:yuedu_hd/ui/store/page_store.dart';
 import 'package:yuedu_hd/ui/widget/space.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,7 +22,6 @@ class HomeState extends State<HomePage> {
   static const PAGE_SOURCE = 2;
   static const PAGE_SETTINGS = 3;
   static const PAGE_DOWNLOAD = 4;
-  static const PAGE_STORE = 5;
 
   int currPage = 0;
   var homeContainerKey = GlobalKey<NavigatorState>();
@@ -296,8 +294,7 @@ class HomeState extends State<HomePage> {
           YDRouter.EXPLORE: (context) => PageExplore(),
           YDRouter.SETTINGS: (context) => PageSettings(),
           YDRouter.BOOK_ADD: (context) => PageAddBook(),
-          YDRouter.DOWNLOAD: (context) => PageDownLoad(),
-          YDRouter.STORE: (context) => PageStore(),
+          YDRouter.DOWNLOAD: (context) => PageDownLoad()
         },
       ),
     );

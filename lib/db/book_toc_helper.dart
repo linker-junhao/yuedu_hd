@@ -65,7 +65,9 @@ class BookTocHelper {
       infoRuleBean = book.sourceBean?.mapInfoRuleBean();
     }
     var charset = sourceBean.mapSearchUrlBean()?.charset;
-    Options requestOptions = Options(sendTimeout: 10000, receiveTimeout: 10000);
+    Options requestOptions = Options(
+        sendTimeout: Duration(milliseconds: 10000),
+        receiveTimeout: Duration(milliseconds: 10000));
     // if(charset == 'gbk'){
     requestOptions.responseDecoder = Utils.gbkDecoder;
     // }
@@ -77,7 +79,7 @@ class BookTocHelper {
 
     try {
       var dio = Utils.createDioClient();
-      dio.options.connectTimeout = 15000;
+      dio.options.connectTimeout = Duration(milliseconds: 15000);
       //解析真正的目录页
       if (infoRuleBean != null &&
           infoRuleBean.tocUrl != null &&
@@ -89,11 +91,10 @@ class BookTocHelper {
 
         var response = await dio.get(book.bookUrl!, options: requestOptions);
         if (response.statusCode == 200) {
-          var tocUrl = await Executor().execute(
-              arg1: response.data as String,
-              arg2: infoRuleBean,
-              arg3: bookUrl,
-              fun3: _parseTocUrl);
+          var tocUrl = await workerManager.execute(() async {
+            return await _parseTocUrl(
+                response.data as String, infoRuleBean!, bookUrl);
+          }, priority: WorkPriority.immediately);
           developer.log(
               '解析真正的目录请求[$bookUrl] 结果[$tocUrl] 规则[${infoRuleBean.tocUrl}]');
           bookUrl = Utils.checkLink(bookUrl, tocUrl);
@@ -125,18 +126,16 @@ class BookTocHelper {
         }
         if (response.statusCode == 200) {
           developer.log('目录解析 $curUrl');
-          var chapters = await Executor().execute(
-              arg1: response.data as String,
-              arg2: ruleBean,
-              arg3: curUrl as String,
-              fun3: _parseResponse);
+          var chapters = await workerManager.execute(() async {
+            // Your CPU-intensive function here
+            return await _parseResponse(response.data, ruleBean, curUrl);
+          }, priority: WorkPriority.immediately);
           if (ruleBean.nextTocUrl != null &&
               ruleBean.nextTocUrl!.trim().isNotEmpty) {
-            var nextUrl = await Executor().execute(
-                arg1: response.data as String,
-                arg2: ruleBean,
-                arg3: curUrl,
-                fun3: _parseNextUrl);
+            var nextUrl = await workerManager.execute(() async {
+            return await _parseNextUrl(
+                response.data as String, ruleBean, curUrl);
+          }, priority: WorkPriority.immediately);
             if (nextUrl != null ||
                 nextUrl.trim().isNotEmpty && nextUrl != "null") {
               //可能是数组，采用逗号分割
@@ -222,7 +221,7 @@ class BookTocHelper {
 }
 
 FutureOr<dynamic> _parseResponse(
-    String data, BookTocRuleBean ruleBean, String url, TypeSendPort sendPort) {
+    String data, BookTocRuleBean ruleBean, String url) {
   var trimedResStr = data.trim();
   if (trimedResStr.isEmpty) {
     return '';
@@ -251,7 +250,8 @@ FutureOr<dynamic> _parseResponse(
               .first
               .value
               .toString()
-          : ruleBean.chapterUrl?.replaceAllMapped(RegExp(r"\{[^\{\}]*\}"), (match) {
+          : ruleBean.chapterUrl?.replaceAllMapped(RegExp(r"\{[^\{\}]*\}"),
+                  (match) {
                 var path = match[0]?.substring(1, match[0]!.length - 1) ?? "";
                 return Utils.parseObjByJsonPath(path, element.value!)
                     .first
@@ -286,7 +286,7 @@ FutureOr<dynamic> _parseResponse(
 }
 
 FutureOr<dynamic> _parseNextUrl(
-    String data, BookTocRuleBean ruleBean, String url, TypeSendPort sendPort) {
+    String data, BookTocRuleBean ruleBean, String url) {
   var trimedResStr = data.trim();
   if (trimedResStr.isEmpty) {
     return '';
@@ -313,7 +313,7 @@ FutureOr<dynamic> _parseNextUrl(
 }
 
 FutureOr<dynamic> _parseTocUrl(
-    String data, BookInfoRuleBean ruleBean, String url, TypeSendPort sendPort) {
+    String data, BookInfoRuleBean ruleBean, String url) {
   var trimedResStr = data.trim();
   if (trimedResStr.isEmpty) {
     return '';
