@@ -21,6 +21,32 @@ class BookSourceHelper{
 
   StringBuffer _log = StringBuffer();
 
+  ///过滤不兼容的书源
+  bool _checkCompatible(Map item){
+
+    var itemStr = item.toString();
+    if(itemStr.contains('@get:')){
+      return false;
+    }
+    if(itemStr.contains('@js')){
+      return false;
+    }
+    if(itemStr.contains('<js>')){
+      return false;
+    }
+    if(itemStr.contains('java.ajax')){
+      return false;
+    }
+    if(itemStr.contains('Jsoup.connect')){
+      return false;
+    }
+    if(item['bookSourceType'] !=null && item['bookSourceType'].toString() != "0"){//只兼容文字源
+      return false;
+    }
+    item['bookSourceType'] = int.tryParse(item['bookSourceType'].toString());
+    return true;
+  }
+
   Future<List<BookSourceBean>> parseSourceString(String jsonStr) async{
     _log.clear();
     _log.write('---解析---\n');
@@ -77,31 +103,6 @@ class BookSourceHelper{
     return Future.value(result);
   }
 
-  ///过滤不兼容的书源
-  bool _checkCompatible(LinkedHashMap item){
-
-    var itemStr = item.toString();
-    if(itemStr.contains('@get:')){
-      return false;
-    }
-    if(itemStr.contains('@js')){
-      return false;
-    }
-    if(itemStr.contains('<js>')){
-      return false;
-    }
-    if(itemStr.contains('java.ajax')){
-      return false;
-    }
-    if(itemStr.contains('Jsoup.connect')){
-      return false;
-    }
-    if(item['bookSourceType'] !=null && item['bookSourceType'].toString() != "0"){//只兼容文字源
-      return false;
-    }
-    item['bookSourceType'] = int.tryParse(item['bookSourceType'].toString());
-    return true;
-  }
 
   String getLog(){
     return _log.toString();

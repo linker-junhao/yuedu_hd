@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:reader_parser2/h_parser/h_eval_parser.dart';
 import 'package:worker_manager/worker_manager.dart';
 import 'package:yuedu_hd/db/BookInfoBean.dart';
 import 'package:yuedu_hd/db/BookSourceBean.dart';
 import 'package:yuedu_hd/db/bookChapterBean.dart';
 import 'package:yuedu_hd/db/databaseHelper.dart';
 import 'dart:developer' as developer;
-import 'package:reader_parser2/h_parser/h_parser.dart';
 
 import 'utils.dart';
 
@@ -263,28 +261,6 @@ FutureOr<dynamic> _parseResponse(
               "";
       result.add(chapterBean);
     });
-  } else {
-    var parser = HParser(data);
-
-    // var eles = parser.parseRuleElements(ruleBean.chapterList);
-    var batchId = parser.parseRuleRaw(ruleBean.chapterList!);
-    developer.log('目录解析开始 ${DateTime.now()}->$ruleBean');
-    var batchSize = parser.queryBatchSize(batchId);
-    for (var i = 0; i < batchSize; i++) {
-      var chapterBean = BookChapterBean();
-      chapterBean.name = parser
-          .parseRuleStringForParent(batchId, ruleBean.chapterName, i)
-          ?.replaceAll('\n', ''); //去掉换行符
-      var urls =
-          parser.parseRuleStringsForParent(batchId, ruleBean.chapterUrl, i);
-      chapterBean.url = urls.isNotEmpty ? urls[0] : null;
-      if (chapterBean.name == null || chapterBean.name!.isEmpty) {
-        continue;
-      }
-      result.add(chapterBean);
-    }
-    parser.destoryBatch(batchId);
-    parser.destory();
   }
 
   developer.log('目录解析结束 ${DateTime.now()}');
@@ -333,11 +309,6 @@ FutureOr<dynamic> _parseNextUrl(
                   .toString();
             }) ??
             "";
-  } else {
-    var parser = HParser(data);
-    var result = parser.parseRuleStrings(ruleBean.nextTocUrl);
-    parser.destory();
-    return result.isNotEmpty ? result[0] : "";
   }
 }
 
@@ -365,15 +336,5 @@ FutureOr<dynamic> _parseTocUrl(
                   .toString();
             }) ??
             "";
-  } else {
-    var parser = HParser(data);
-    var result = parser.parseRuleStrings(ruleBean.tocUrl);
-    parser.destory();
-    if (result.isEmpty || result[0] == "null") {
-      //奇怪的办法去兼容需要注入参数的规则，暂时不实现参数的注入
-      var eparser = HEvalParser({'baseUrl': url});
-      return eparser.parse(ruleBean.tocUrl);
-    }
-    return result.isNotEmpty ? result[0] : "";
   }
 }

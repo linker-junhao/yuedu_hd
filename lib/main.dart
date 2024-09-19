@@ -15,13 +15,15 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:developer' as developer;
 
-
 void main() async {
-  if (Platform.isWindows || Platform.isLinux) {
-    // Initialize FFI
-    sqfliteFfiInit();
-    // Change the default factory
-    databaseFactory = databaseFactoryFfi;
+  if (kIsWeb) {
+  } else {
+    if (Platform.isWindows || Platform.isLinux) {
+      // Initialize FFI
+      sqfliteFfiInit();
+      // Change the default factory
+      databaseFactory = databaseFactoryFfi;
+    }
   }
   WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setPreferredOrientations([ 	 //强制横屏
@@ -54,17 +56,16 @@ dynamic loadBookRules() async {
     developer.log(e.toString());
     if (loadRetryCount < 5) {
       Timer(Duration(seconds: 3), () => loadBookRules());
-    } else {
-    }
-  } finally {
-
-  }
+    } else {}
+  } finally {}
 }
 
 Widget transitionBuilderInit(ctx, Widget? child) {
-  return Row(children: [
-    BotToastInit()(ctx, child),
-  ],) ;
+  return Row(
+    children: [
+      BotToastInit()(ctx, child),
+    ],
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -89,8 +90,8 @@ class MyApp extends StatelessWidget {
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity, colorScheme: ColorScheme.fromSwatch()
-            .copyWith(secondary: YColors.text_btn_color).copyWith(background: YColors.background),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        colorScheme: ColorScheme.fromSwatch()
       ),
       routes: <String, WidgetBuilder>{
         YDRouter.READING_PAGE: (context) => PageReading(),

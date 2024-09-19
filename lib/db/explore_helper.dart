@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:reader_parser2/h_parser/h_parser.dart';
 import 'package:worker_manager/worker_manager.dart';
 import 'package:yuedu_hd/db/BookInfoBean.dart';
 import 'package:yuedu_hd/db/BookSourceBean.dart';
@@ -262,55 +261,6 @@ FutureOr<dynamic> _parse(
       }
       result.add(bookInfo);
     });
-  } else {
-    try {
-      var hparser = HParser(response);
-
-      var bId = hparser.parseRuleRaw(ruleBean.bookList!);
-      var batchSize = hparser.queryBatchSize(bId);
-      for (var i = 0; i < batchSize; i++) {
-        var bookInfo = BookInfoBean();
-
-        bookInfo.name = hparser.parseRuleStringForParent(bId, ruleBean.name, i);
-        bookInfo.author =
-            hparser.parseRuleStringForParent(bId, ruleBean.author, i);
-        var kinds = hparser.parseRuleStringForParent(bId, ruleBean.kind, i);
-        bookInfo.kind = kinds == null ? '' : kinds.replaceAll('\n', '|');
-        bookInfo.intro =
-            hparser.parseRuleStringForParent(bId, ruleBean.intro, i);
-        bookInfo.lastChapter =
-            hparser.parseRuleStringForParent(bId, ruleBean.lastChapter, i);
-        bookInfo.wordCount =
-            hparser.parseRuleStringForParent(bId, ruleBean.wordCount, i);
-        var url = hparser.parseRuleStringsForParent(bId, ruleBean.bookUrl, i);
-        bookInfo.bookUrl = url.isNotEmpty ? url[0] : null;
-        if (bookInfo.bookUrl == null) {
-          bookInfo.bookUrl =
-              hparser.parseRuleStringForParent(bId, ruleBean.tocUrl, i);
-        }
-        var coverUrl =
-            hparser.parseRuleStringsForParent(bId, ruleBean.coverUrl, i);
-        bookInfo.coverUrl = coverUrl.isNotEmpty ? coverUrl[0] : null;
-        if (bookInfo.name == null ||
-            bookInfo.author == null ||
-            bookInfo.bookUrl == null) {
-          continue;
-        }
-        bookInfo.name = bookInfo.name!.trim();
-        bookInfo.author = bookInfo.author!.trim();
-        if (bookInfo.name!.isEmpty ||
-            bookInfo.author!.isEmpty ||
-            bookInfo.bookUrl!.isEmpty) {
-          continue;
-        }
-        result.add(bookInfo);
-      }
-
-      hparser.destoryBatch(bId);
-      hparser.destory();
-    } catch (e) {
-      print('搜索解析错误:$e');
-    }
   }
 
   // jsCore.destroy();

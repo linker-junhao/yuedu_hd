@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:yuedu_hd/db/BookShelfBean.dart';
 import 'package:yuedu_hd/ui/reading/DisplayConfig.dart';
 
@@ -16,7 +18,6 @@ class DatabaseHelper {
   static const TABLE_BOOK_COMB_SOURCE = 'book_comb_source';
   static const TABLE_CHAPTER = 'book_chapter';
   static const TABLE_CONFIG = 'display_config';
-
 
   static const _SQL_CREATE_BOOK_SOURCES = '''
   CREATE TABLE "book_sources" (
@@ -91,7 +92,7 @@ ON "book" (
 );
   
   ''';
-  static const _SQL_CREATE_CHAPTER ='''
+  static const _SQL_CREATE_CHAPTER = '''
   CREATE TABLE "book_chapter" (
   "_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "bookId" INTEGER,
@@ -113,7 +114,7 @@ ON "book_chapter" (
 );
   ''';
 
-  static const _SQL_CREATE_CONFIG='''
+  static const _SQL_CREATE_CONFIG = '''
   CREATE TABLE "display_config" (
     "_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "isSinglePage" integer NOT NULL DEFAULT 0,
@@ -138,7 +139,6 @@ ON "book_chapter" (
   );
   ''';
 
-
   //----------------------------------------------------------------------
   static DatabaseHelper? _instance;
 
@@ -162,29 +162,70 @@ ON "book_chapter" (
     if (_database != null) {
       return Future.value(_database);
     }
-    return await openDatabase(DB_PATH, version: 3,
+    if (kIsWeb) {
+      var swBasicOptions = SqfliteFfiWebOptions(
+          sharedWorkerUri: Uri.parse('sqflite_sw.js'),
+          // ignore: invalid_use_of_visible_for_testing_member
+          forceAsBasicWorker: true);
+      var databaseFactoryWebBasicWorkerLocal =
+          createDatabaseFactoryFfiWeb(options: swBasicOptions);
+      return await databaseFactoryWebBasicWorkerLocal.openDatabase(DB_PATH, options: OpenDatabaseOptions(
+        version: 3,
         onCreate: (Database db, int version) async {
-      await _executeMultiSQL(db, _SQL_CREATE_BOOK_SOURCES);
-      await _executeMultiSQL(db, _SQL_INDEX_SOURCE);
-      await _executeMultiSQL(db, _SQL_CREATE_BOOK);
-      await _executeMultiSQL(db, _SQL_CREATE_BOOK_COMB_SOURCE);
-      await _executeMultiSQL(db, _SQL_CREATE_CHAPTER);
-      //配置项
-      await _executeMultiSQL(db, _SQL_CREATE_CONFIG);
-      await db.insert(TABLE_CONFIG, DisplayConfig.getDefault().toMap());
-    },onUpgrade: (Database db, int oldVersion, int newVersion) async{
-      if(oldVersion == 1 && newVersion == 2){
-        //配置增加字体路径
-        await db.execute("ALTER TABLE display_config ADD COLUMN fontPath TEXT");
-      }else if(oldVersion == 1 && newVersion ==3){
-        await db.execute("ALTER TABLE display_config ADD COLUMN fontPath TEXT");
-        await db.execute("ALTER TABLE display_config ADD COLUMN extConfig TEXT");
-
-      }else if(oldVersion == 2 && newVersion ==3){
-        // await db.execute("ALTER TABLE display_config ADD COLUMN fontPath TEXT");
-        await db.execute("ALTER TABLE display_config ADD COLUMN extConfig TEXT");
-      }
-        });
+          await _executeMultiSQL(db, _SQL_CREATE_BOOK_SOURCES);
+          await _executeMultiSQL(db, _SQL_INDEX_SOURCE);
+          await _executeMultiSQL(db, _SQL_CREATE_BOOK);
+          await _executeMultiSQL(db, _SQL_CREATE_BOOK_COMB_SOURCE);
+          await _executeMultiSQL(db, _SQL_CREATE_CHAPTER);
+          //配置项
+          await _executeMultiSQL(db, _SQL_CREATE_CONFIG);
+          await db.insert(TABLE_CONFIG, DisplayConfig.getDefault().toMap());
+        },
+        onUpgrade: (Database db, int oldVersion, int newVersion) async {
+          if (oldVersion == 1 && newVersion == 2) {
+            //配置增加字体路径
+            await db
+                .execute("ALTER TABLE display_config ADD COLUMN fontPath TEXT");
+          } else if (oldVersion == 1 && newVersion == 3) {
+            await db
+                .execute("ALTER TABLE display_config ADD COLUMN fontPath TEXT");
+            await db.execute(
+                "ALTER TABLE display_config ADD COLUMN extConfig TEXT");
+          } else if (oldVersion == 2 && newVersion == 3) {
+            // await db.execute("ALTER TABLE display_config ADD COLUMN fontPath TEXT");
+            await db.execute(
+                "ALTER TABLE display_config ADD COLUMN extConfig TEXT");
+          }
+        }
+      ));
+    } else {
+      return await openDatabase(DB_PATH, version: 3,
+          onCreate: (Database db, int version) async {
+        await _executeMultiSQL(db, _SQL_CREATE_BOOK_SOURCES);
+        await _executeMultiSQL(db, _SQL_INDEX_SOURCE);
+        await _executeMultiSQL(db, _SQL_CREATE_BOOK);
+        await _executeMultiSQL(db, _SQL_CREATE_BOOK_COMB_SOURCE);
+        await _executeMultiSQL(db, _SQL_CREATE_CHAPTER);
+        //配置项
+        await _executeMultiSQL(db, _SQL_CREATE_CONFIG);
+        await db.insert(TABLE_CONFIG, DisplayConfig.getDefault().toMap());
+      }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
+        if (oldVersion == 1 && newVersion == 2) {
+          //配置增加字体路径
+          await db
+              .execute("ALTER TABLE display_config ADD COLUMN fontPath TEXT");
+        } else if (oldVersion == 1 && newVersion == 3) {
+          await db
+              .execute("ALTER TABLE display_config ADD COLUMN fontPath TEXT");
+          await db
+              .execute("ALTER TABLE display_config ADD COLUMN extConfig TEXT");
+        } else if (oldVersion == 2 && newVersion == 3) {
+          // await db.execute("ALTER TABLE display_config ADD COLUMN fontPath TEXT");
+          await db
+              .execute("ALTER TABLE display_config ADD COLUMN extConfig TEXT");
+        }
+      });
+    }
   }
 
   Future<int> _executeMultiSQL(Database db, String sql) async {
@@ -200,7 +241,8 @@ ON "book_chapter" (
   //------书源管理----------
 
   ///没记录插入，有记录更新数据库,通过书源url索引
-  Future<int> insertOrUpdateBookSource(BookSourceBean input,Transaction txn) async {
+  Future<int> insertOrUpdateBookSource(
+      BookSourceBean input, Transaction txn) async {
     //被迫采用这种方式
     var update = await txn.rawInsert('''
       INSERT OR IGNORE INTO book_sources(
@@ -292,129 +334,154 @@ ON "book_chapter" (
   /// 全部启用书源
   Future<List<BookSourceBean>> queryAllBookSourceEnabled() async {
     var db = await withDB();
-    var result = await db.query(TABLE_SOURCE,
-        where: 'enabled == 1');
+    var result = await db.query(TABLE_SOURCE, where: 'enabled == 1');
     var beanList = result.map((e) => BookSourceBean.fromJson(e));
     return Future.value(beanList.toList());
   }
 
-  Future<BookSourceBean?> queryBookSourceById(int id) async{
-    return await withDB().then((db) => db.query(TABLE_SOURCE,where: '_id = $id').then((value){
-      if(value.isEmpty){return null;}
-      return BookSourceBean.fromJson(value[0]);
-    }));
+  Future<BookSourceBean?> queryBookSourceById(int id) async {
+    return await withDB()
+        .then((db) => db.query(TABLE_SOURCE, where: '_id = $id').then((value) {
+              if (value.isEmpty) {
+                return null;
+              }
+              return BookSourceBean.fromJson(value[0]);
+            }));
   }
 
-  Future<Map<String,dynamic>?> queryBookSourceMapById(int id) async{
-    return await withDB().then((db) => db.query(TABLE_SOURCE,where: '_id = $id').then((value){
-      if(value.isEmpty){return null;}
-      return value[0];
-    }));
+  Future<Map<String, dynamic>?> queryBookSourceMapById(int id) async {
+    return await withDB()
+        .then((db) => db.query(TABLE_SOURCE, where: '_id = $id').then((value) {
+              if (value.isEmpty) {
+                return null;
+              }
+              return value[0];
+            }));
   }
 
   /// 删除书源
   dynamic deleteBookSourceByIds(List<int> ids) async {
     var args = ids.fold(
         '0',
-            (previousValue, element) =>
-        previousValue = (previousValue as String) + ',' + element.toString());
-    return await withDB().then((db) => db.transaction((txn) async{
-      await txn.delete(TABLE_SOURCE, where: '_id in ($args)');
-      await txn.delete(TABLE_BOOK_COMB_SOURCE,where: 'sourceid in ($args)');
-    }));
+        (previousValue, element) => previousValue =
+            (previousValue as String) + ',' + element.toString());
+    return await withDB().then((db) => db.transaction((txn) async {
+          await txn.delete(TABLE_SOURCE, where: '_id in ($args)');
+          await txn.delete(TABLE_BOOK_COMB_SOURCE,
+              where: 'sourceid in ($args)');
+        }));
   }
+
   /// 启用or禁用
-  dynamic updateBookSourceStateById(int id,bool enabled) async{
-    return withDB().then((db) => db.update(TABLE_SOURCE, {'enabled':enabled?1:0},where: '_id = $id'));
+  dynamic updateBookSourceStateById(int id, bool enabled) async {
+    return withDB().then((db) => db.update(
+        TABLE_SOURCE, {'enabled': enabled ? 1 : 0},
+        where: '_id = $id'));
   }
+
   /// 启用 or 禁用
-  dynamic updateBookSourceStateByIds(List<int> ids,bool enabled) async{
+  dynamic updateBookSourceStateByIds(List<int> ids, bool enabled) async {
     var args = ids.fold(
         '0',
-            (previousValue, element) =>
-        previousValue = (previousValue as String) + (',' + element.toString()));
-    return await withDB().then((db) => db.update(TABLE_SOURCE, {'enabled':enabled?1:0},where: '_id in ($args)'));
+        (previousValue, element) => previousValue =
+            (previousValue as String) + (',' + element.toString()));
+    return await withDB().then((db) => db.update(
+        TABLE_SOURCE, {'enabled': enabled ? 1 : 0},
+        where: '_id in ($args)'));
   }
+
   //-------------书籍管理-----------------
-  dynamic insertBookToDB(BookInfoBean infoBean) async{
+  dynamic insertBookToDB(BookInfoBean infoBean) async {
+    return await withDB().then((db) => db.transaction((txn) async {
+          //1书表插数据
+          var bookCheck = await txn.query(TABLE_BOOK,
+              columns: ['_id'],
+              where: 'name=? and author=?',
+              whereArgs: [infoBean.name ?? 'none', infoBean.author ?? 'none']);
+          if (bookCheck.isEmpty) {
+            //插入数据
+            await txn.insert(TABLE_BOOK, {
+              'name': infoBean.name,
+              'author': infoBean.author,
+              'coverUrl': infoBean.coverUrl,
+              'intro': infoBean.intro,
+              'kind': infoBean.kind ?? '',
+              'lastChapter': infoBean.lastChapter,
+              'wordCount': infoBean.wordCount,
+              'inbookShelf': 0,
+              'groupId': 0,
+              'updatetime': DateTime.now().millisecondsSinceEpoch,
+            });
+          }
+          bookCheck = await txn.query(TABLE_BOOK,
+              columns: ['_id', 'lastChapter', 'wordCount', 'coverUrl', 'intro'],
+              where: 'name=? and author=?',
+              whereArgs: [infoBean.name ?? 'none', infoBean.author ?? 'none']);
+          if (bookCheck.isEmpty) {
+            throw Exception('书表插入异常!');
+          }
+          var bookBean = bookCheck[0];
+          var id = bookBean['_id'];
+          //check need Update
+          var updateKV = Map<String, dynamic>();
+          if (infoBean.lastChapter != null &&
+              infoBean.lastChapter!.isNotEmpty) {
+            updateKV['lastChapter'] = infoBean.lastChapter;
+          }
+          if (infoBean.wordCount != null && infoBean.wordCount!.isNotEmpty) {
+            updateKV['wordCount'] = infoBean.wordCount;
+          }
+          if (bookBean['coverUrl'] == null ||
+              (bookBean['coverUrl'] as String).isEmpty) {
+            updateKV['coverUrl'] = infoBean.coverUrl;
+          }
+          if (bookBean['intro'] == null ||
+              (bookBean['intro'] as String).isEmpty) {
+            updateKV['intro'] = infoBean.intro;
+          }
 
-    return await withDB().then((db) => db.transaction((txn) async{
-      //1书表插数据
-      var bookCheck = await txn.query(TABLE_BOOK,columns: ['_id'],where: 'name=? and author=?',whereArgs: [infoBean.name??'none',infoBean.author??'none']);
-      if(bookCheck.isEmpty){
-        //插入数据
-        await txn.insert(TABLE_BOOK, {
-          'name':infoBean.name,
-          'author':infoBean.author,
-          'coverUrl':infoBean.coverUrl,
-          'intro':infoBean.intro,
-          'kind':infoBean.kind ?? '',
-          'lastChapter':infoBean.lastChapter,
-          'wordCount':infoBean.wordCount,
-          'inbookShelf':0,
-          'groupId':0,
-          'updatetime':DateTime.now().millisecondsSinceEpoch,
-        });
-      }
-      bookCheck = await txn.query(TABLE_BOOK,columns: ['_id','lastChapter','wordCount','coverUrl','intro'],where: 'name=? and author=?',whereArgs: [infoBean.name??'none',infoBean.author??'none']);
-      if(bookCheck.isEmpty){
-        throw Exception('书表插入异常!');
-      }
-      var bookBean = bookCheck[0];
-      var id = bookBean['_id'];
-      //check need Update
-      var updateKV = Map<String,dynamic>();
-      if(infoBean.lastChapter != null && infoBean.lastChapter!.isNotEmpty){
-        updateKV['lastChapter'] = infoBean.lastChapter;
-      }
-      if(infoBean.wordCount != null && infoBean.wordCount!.isNotEmpty){
-        updateKV['wordCount'] = infoBean.wordCount;
-      }
-      if(bookBean['coverUrl'] == null || (bookBean['coverUrl'] as String).isEmpty){
-        updateKV['coverUrl'] = infoBean.coverUrl;
-      }
-      if(bookBean['intro'] == null || (bookBean['intro'] as String).isEmpty){
-        updateKV['intro'] = infoBean.intro;
-      }
+          if (updateKV.isNotEmpty) {
+            await txn.update(TABLE_BOOK, updateKV,
+                where: '_id = ?', whereArgs: [id]);
+          }
+          //2关联表插数据
+          var bookCombCheck = await txn.query(TABLE_BOOK_COMB_SOURCE,
+              where: 'bookid = ? and sourceid = ?',
+              whereArgs: [id, infoBean.source_id]);
 
-      if(updateKV.isNotEmpty){
-        await txn.update(TABLE_BOOK, updateKV,where: '_id = ?',whereArgs: [id]);
-      }
-      //2关联表插数据
-      var bookCombCheck = await txn.query(TABLE_BOOK_COMB_SOURCE,where: 'bookid = ? and sourceid = ?',whereArgs: [id,infoBean.source_id]);
-
-      if(bookCombCheck.isEmpty){
-        await txn.insert(TABLE_BOOK_COMB_SOURCE, {
-          'bookid':id,
-          'sourceid ':infoBean.source_id,
-          'bookurl':infoBean.bookUrl,
-          'used':0,
-        });
-      }
-      return Future.value(id);
-    }));
+          if (bookCombCheck.isEmpty) {
+            await txn.insert(TABLE_BOOK_COMB_SOURCE, {
+              'bookid': id,
+              'sourceid ': infoBean.source_id,
+              'bookurl': infoBean.bookUrl,
+              'used': 0,
+            });
+          }
+          return Future.value(id);
+        }));
   }
 
   ///id获取书籍信息
-  Future<BookInfoBean> queryBookById(int bookId) async{
-    var map = await withDB().then((db) => db.query(TABLE_BOOK,where: '_id = $bookId'));
+  Future<BookInfoBean> queryBookById(int bookId) async {
+    var map = await withDB()
+        .then((db) => db.query(TABLE_BOOK, where: '_id = $bookId'));
     return Future.value(BookInfoBean.fromMap(map[0]));
   }
 
   ///id移除书架
-  Future<void> removeBookshelfById(int bookId) async{
-    await withDB().then((db) => db.transaction((txn)async{
-      await txn.delete(TABLE_BOOK,where: '_id = $bookId');
-      await txn.delete(TABLE_BOOK_COMB_SOURCE,where: 'bookid = $bookId');
-      await txn.delete(TABLE_CHAPTER,where: 'bookId = $bookId');
-    }));
+  Future<void> removeBookshelfById(int bookId) async {
+    await withDB().then((db) => db.transaction((txn) async {
+          await txn.delete(TABLE_BOOK, where: '_id = $bookId');
+          await txn.delete(TABLE_BOOK_COMB_SOURCE, where: 'bookid = $bookId');
+          await txn.delete(TABLE_CHAPTER, where: 'bookId = $bookId');
+        }));
     return Future.value();
   }
 
   ///查询在书架的书籍[sortType]/0添加顺序，1上次阅读时间
-  Future<List<BookShelfBean>> queryBookInBookShelf(int sortType) async{
-    return await withDB().then((db) => db.transaction((txn) async{
-      var bookList = await txn.rawQuery('''
+  Future<List<BookShelfBean>> queryBookInBookShelf(int sortType) async {
+    return await withDB().then((db) => db.transaction((txn) async {
+          var bookList = await txn.rawQuery('''
       SELECT
       	book.name,
       	book.author,
@@ -431,78 +498,87 @@ ON "book_chapter" (
       	book.inbookShelf = 1 
       	AND book_comb_source.used = 1
       
-      ${sortType == 1?"ORDER BY updatetime DESC":"ORDER BY book._id"}
+      ${sortType == 1 ? "ORDER BY updatetime DESC" : "ORDER BY book._id"}
       ''').then((value) => value.map((e) => BookShelfBean.fromMap(e)).toList());
-      //章节信息补充
-      for (var book in bookList) {
-        var count = await txn.rawQuery('''
+          //章节信息补充
+          for (var book in bookList) {
+            var count = await txn.rawQuery('''
         SELECT COUNT(*) AS chaptersCount FROM "book_chapter" WHERE book_chapter.bookId = ${book.bookId} AND book_chapter.sourceId = ${book.sourceId}
         ''');
-        book.chaptersCount = count[0]['chaptersCount'] as int;
-        var notReadCount = await txn.rawQuery('''
-        SELECT COUNT(*) AS notReadChapterCount FROM "book_chapter" WHERE book_chapter.bookId = ${book.bookId} AND book_chapter.sourceId = ${book.sourceId} AND _id > (SELECT _id FROM book_chapter WHERE book_chapter.name LIKE '%${book.lastReadChapter??''}%' AND book_chapter.sourceId = ${book.sourceId} LIMIT 1)
+            book.chaptersCount = count[0]['chaptersCount'] as int;
+            var notReadCount = await txn.rawQuery('''
+        SELECT COUNT(*) AS notReadChapterCount FROM "book_chapter" WHERE book_chapter.bookId = ${book.bookId} AND book_chapter.sourceId = ${book.sourceId} AND _id > (SELECT _id FROM book_chapter WHERE book_chapter.name LIKE '%${book.lastReadChapter ?? ''}%' AND book_chapter.sourceId = ${book.sourceId} LIMIT 1)
         ''');
-        book.notReadChapterCount = notReadCount[0]['notReadChapterCount'] as int;
-      }
-      return Future.value(bookList);
-    })
-    );
-
+            book.notReadChapterCount =
+                notReadCount[0]['notReadChapterCount'] as int;
+          }
+          return Future.value(bookList);
+        }));
   }
 
   ///更新阅读时间
-  dynamic updateBookReadTime(int bookId){
-    withDB().then((db)=>db.update(TABLE_BOOK, {'updatetime':DateTime.now().millisecondsSinceEpoch,},where: '_id = $bookId'));
+  dynamic updateBookReadTime(int bookId) {
+    withDB().then((db) => db.update(
+        TABLE_BOOK,
+        {
+          'updatetime': DateTime.now().millisecondsSinceEpoch,
+        },
+        where: '_id = $bookId'));
   }
-
 
   ///书籍信息，完整关联
   ///[sourceId] >= 0 表示使用当前指定的书源,没有的话默认启用的一个
-  dynamic queryBookInfoFromBookIdCombSourceId(int bookId,int sourceId) async{
+  dynamic queryBookInfoFromBookIdCombSourceId(int bookId, int sourceId) async {
     var db = await withDB();
-    return await db.transaction((txn) async{
-      var bookInfoQuery = await txn.query(TABLE_BOOK,where: '_id = $bookId');
+    return await db.transaction((txn) async {
+      var bookInfoQuery = await txn.query(TABLE_BOOK, where: '_id = $bookId');
       var bookInfo = BookInfoBean.fromMap(bookInfoQuery[0]);
       var usedSourceId = sourceId;
-      var bookComb = await txn.query(TABLE_BOOK_COMB_SOURCE,where: 'bookid = $bookId');
-      if(usedSourceId <= 0){//未指定书源，先查出所有能用的书源
+      var bookComb =
+          await txn.query(TABLE_BOOK_COMB_SOURCE, where: 'bookid = $bookId');
+      if (usedSourceId <= 0) {
+        //未指定书源，先查出所有能用的书源
         for (var value in bookComb) {
-          if(value['used'] == 1){
+          if (value['used'] == 1) {
             bookInfo.bookUrl = value['bookurl'] as String;
             usedSourceId = value['sourceid'] as int;
             break;
           }
         }
         //没有指定默认书源,先把第一个指定成默认书源
-        if(bookInfo.bookUrl == null){
+        if (bookInfo.bookUrl == null) {
           var comb = bookComb[0];
           usedSourceId = comb['sourceid'] as int;
           var combId = comb['_id'];
-          await txn.update(TABLE_BOOK_COMB_SOURCE, {'used':1},where: '_id = ?',whereArgs: [combId]);
+          await txn.update(TABLE_BOOK_COMB_SOURCE, {'used': 1},
+              where: '_id = ?', whereArgs: [combId]);
           bookInfo.bookUrl = comb['bookurl'] as String;
         }
-      }//check sources
-      else{//指定了书源
-        var query = await txn.query(TABLE_BOOK_COMB_SOURCE,where: 'sourceid = $usedSourceId and bookid = $bookId');
+      } //check sources
+      else {
+        //指定了书源
+        var query = await txn.query(TABLE_BOOK_COMB_SOURCE,
+            where: 'sourceid = $usedSourceId and bookid = $bookId');
         bookInfo.bookUrl = query[0]['bookurl'] as String;
       }
 
-      var sourceList = await txn.query(TABLE_SOURCE,where: '_id = $usedSourceId').then((list) => list.map((e) => BookSourceBean.fromJson(e)).toList());
-      if(sourceList.isNotEmpty){
+      var sourceList = await txn
+          .query(TABLE_SOURCE, where: '_id = $usedSourceId')
+          .then((list) => list.map((e) => BookSourceBean.fromJson(e)).toList());
+      if (sourceList.isNotEmpty) {
         bookInfo.source_id = usedSourceId;
         bookInfo.sourceBean = sourceList[0];
-      }else{//被删除了书源
-
+      } else {
+        //被删除了书源
       }
 
       return Future.value(bookInfo);
     });
   }
 
-
   ///更新章节目录
-  dynamic updateToc(List<BookChapterBean> chapterList) async{
-    return await withDB().then((db){
+  dynamic updateToc(List<BookChapterBean> chapterList) async {
+    return await withDB().then((db) {
       var batch = db.batch();
       for (var chapter in chapterList) {
         batch.execute('''
@@ -514,16 +590,17 @@ ON "book_chapter" (
       }
       batch.commit();
       //更新书籍最新章节
-      if(chapterList.isNotEmpty){
+      if (chapterList.isNotEmpty) {
         var c = chapterList.last;
-         db.update(TABLE_BOOK, {'lastChapter':c.name},where: '_id = ${c.bookId}');
+        db.update(TABLE_BOOK, {'lastChapter': c.name},
+            where: '_id = ${c.bookId}');
       }
     });
   }
 
   ///查询书籍关联可用的所有书源
-  dynamic queryAllEnabledSource(int bookId) async{
-    var queryResult = await withDB().then((db){
+  dynamic queryAllEnabledSource(int bookId) async {
+    var queryResult = await withDB().then((db) {
       return db.rawQuery('''
       SELECT
       	book_comb_source.*,
@@ -540,57 +617,69 @@ ON "book_chapter" (
       	book_comb_source.bookid = $bookId
       	AND book_sources.enabled = 1
       ''');
-    } );
+    });
     List<BookSourceCombBean> result = [];
     for (var data in queryResult) {
       var info = BookSourceCombBean.fromMap(data);
-      info.sourceBean = BookSourceBean.fromJson(data);//id会出错,不能使用里面的id
+      info.sourceBean = BookSourceBean.fromJson(data); //id会出错,不能使用里面的id
       result.add(info);
     }
     return Future.value(result);
   }
 
   ///切换书源
-  dynamic switchUsedSource(int bookId,int sourceId) async{
-    return await withDB().then((db) => db.transaction((txn) async{
-      await txn.update(TABLE_BOOK_COMB_SOURCE, {'used':0},where: 'bookid = $bookId');
-      await txn.update(TABLE_BOOK_COMB_SOURCE, {'used':1},where: 'bookid = $bookId and sourceid = $sourceId');
-    }));
+  dynamic switchUsedSource(int bookId, int sourceId) async {
+    return await withDB().then((db) => db.transaction((txn) async {
+          await txn.update(TABLE_BOOK_COMB_SOURCE, {'used': 0},
+              where: 'bookid = $bookId');
+          await txn.update(TABLE_BOOK_COMB_SOURCE, {'used': 1},
+              where: 'bookid = $bookId and sourceid = $sourceId');
+        }));
   }
 
   ///查询所有章节目录
-  Future<List<BookChapterBean>> queryBookChapters(int bookId,{int from=-1,int limit=99999}) async{
-    return await withDB().then((db) => db.transaction((txn) async{
-      var usedSource = await txn.query(TABLE_BOOK_COMB_SOURCE,where: 'bookid = $bookId and used = 1');
-      var usedSourceId = usedSource[0]['sourceid'];
-      var query = await txn.query(TABLE_CHAPTER,columns: [
-        '_id',
-        'name',
-        'url',
-        'hasRead',
-        'LENGTH(content) as length',
-      ],where: 'bookId = $bookId and sourceId = $usedSourceId and _id > $from',limit: limit);
-      var beanList = query.map((e) => BookChapterBean.fromJson(e)).toList();
-      return Future.value(beanList);
-    }));
+  Future<List<BookChapterBean>> queryBookChapters(int bookId,
+      {int from = -1, int limit = 99999}) async {
+    return await withDB().then((db) => db.transaction((txn) async {
+          var usedSource = await txn.query(TABLE_BOOK_COMB_SOURCE,
+              where: 'bookid = $bookId and used = 1');
+          var usedSourceId = usedSource[0]['sourceid'];
+          var query = await txn.query(TABLE_CHAPTER,
+              columns: [
+                '_id',
+                'name',
+                'url',
+                'hasRead',
+                'LENGTH(content) as length',
+              ],
+              where:
+                  'bookId = $bookId and sourceId = $usedSourceId and _id > $from',
+              limit: limit);
+          var beanList = query.map((e) => BookChapterBean.fromJson(e)).toList();
+          return Future.value(beanList);
+        }));
   }
 
-  dynamic addToBookShelf(int bookId) async{
-    return await withDB().then((db) => db.update(TABLE_BOOK, {'inbookShelf':1},where: '_id = $bookId'));
+  dynamic addToBookShelf(int bookId) async {
+    return await withDB().then((db) =>
+        db.update(TABLE_BOOK, {'inbookShelf': 1}, where: '_id = $bookId'));
   }
 
   ///查询章节内容
-  Future<String> queryChapterContent(int chapterId) async{
-    return await withDB().then((db) => db.query(TABLE_CHAPTER,columns: ['content'],where: '_id = $chapterId')).then((value){
-      if(value.isEmpty){
+  Future<String> queryChapterContent(int chapterId) async {
+    return await withDB()
+        .then((db) => db.query(TABLE_CHAPTER,
+            columns: ['content'], where: '_id = $chapterId'))
+        .then((value) {
+      if (value.isEmpty) {
         return "";
       }
-      return (value[0]['content'] as String?) ??"";
+      return (value[0]['content'] as String?) ?? "";
     });
   }
 
   ///查询章节解析用的书源
-  Future<BookSourceBean> queryBookSourceByChapterId(int chapterId) async{
+  Future<BookSourceBean> queryBookSourceByChapterId(int chapterId) async {
     return await withDB().then((db) => db.rawQuery('''
     SELECT
     	* 
@@ -601,37 +690,48 @@ ON "book_chapter" (
     ''')).then((value) => BookSourceBean.fromJson(value[0]));
   }
 
-
   ///查询章节的地址
-  Future<String> queryChapterUrl(int chapterId) async{
-    return withDB().then((db) => db.query(TABLE_CHAPTER,columns: ['url'],where: '_id = $chapterId'))
+  Future<String> queryChapterUrl(int chapterId) async {
+    return withDB()
+        .then((db) => db.query(TABLE_CHAPTER,
+            columns: ['url'], where: '_id = $chapterId'))
         .then((value) => value[0]['url'] as String);
   }
 
   ///更新章节内容
-  dynamic updateChapterContent(int chapterId,String content) async{
-    return withDB().then((db) => db.update(TABLE_CHAPTER, {'content':content},where: '_id = $chapterId'));
+  dynamic updateChapterContent(int chapterId, String content) async {
+    return withDB().then((db) => db.update(TABLE_CHAPTER, {'content': content},
+        where: '_id = $chapterId'));
   }
 
   ///更新阅读的章节
-  dynamic updateLastReadChapter(int bookId,String? chapterName,int lastReadPage){
-    return withDB().then((db) => db.update(TABLE_BOOK, {'lastReadChapter':(chapterName??'').trim(),'lastReadPage':lastReadPage},where: '_id = $bookId'));
+  dynamic updateLastReadChapter(
+      int bookId, String? chapterName, int lastReadPage) {
+    return withDB().then((db) => db.update(
+        TABLE_BOOK,
+        {
+          'lastReadChapter': (chapterName ?? '').trim(),
+          'lastReadPage': lastReadPage
+        },
+        where: '_id = $bookId'));
   }
 
   ///保存配置项
-  dynamic saveConfig(DisplayConfig config) async{
-    return withDB().then((db) => db.update(TABLE_CONFIG
-        , config.toMap(),where: '_id = 1'));
+  dynamic saveConfig(DisplayConfig config) async {
+    return withDB().then(
+        (db) => db.update(TABLE_CONFIG, config.toMap(), where: '_id = 1'));
   }
 
   ///加载配置
-  Future<DisplayConfig> loadConfig() async{
-    return withDB().then((db) => db.query(TABLE_CONFIG)).then((value) => DisplayConfig.fromMap(value[0]));
+  Future<DisplayConfig> loadConfig() async {
+    return withDB()
+        .then((db) => db.query(TABLE_CONFIG))
+        .then((value) => DisplayConfig.fromMap(value[0]));
   }
-  
+
   ///清空所有数据
-  dynamic clearBookData() async{
-    return withDB().then((db) async{
+  dynamic clearBookData() async {
+    return withDB().then((db) async {
       await db.delete(TABLE_BOOK);
       await db.delete(TABLE_BOOK_COMB_SOURCE);
       await db.delete(TABLE_CHAPTER);
@@ -639,8 +739,8 @@ ON "book_chapter" (
   }
 
   ///清空所有数据
-  dynamic clearAllData() async{
-    return withDB().then((db) async{
+  dynamic clearAllData() async {
+    return withDB().then((db) async {
       await db.delete(TABLE_BOOK);
       await db.delete(TABLE_BOOK_COMB_SOURCE);
       await db.delete(TABLE_CHAPTER);

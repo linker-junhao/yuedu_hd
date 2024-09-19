@@ -8,7 +8,6 @@ import 'package:yuedu_hd/db/BookSourceBean.dart';
 import 'package:yuedu_hd/db/databaseHelper.dart';
 import 'package:yuedu_hd/db/utils.dart';
 import 'dart:developer' as developer;
-import 'package:reader_parser2/h_parser/h_parser.dart';
 
 ///正文解析
 class BookContentHelper {
@@ -166,16 +165,6 @@ FutureOr<String?> parseContent(
         .map((e) => e.value)
         .join('\n');
     return content;
-  } else {
-    developer.log('开始解析正文 $rule');
-    var parser = HParser(html);
-    var content = parser.parseRuleString(rule.content);
-    if (rule.replaceRegex == null || rule.replaceRegex!.isEmpty) {
-      parser.destory();
-      return content ?? "";
-    }
-    parser.destory();
-    return HParser.parseReplaceRule(content ?? "", rule.replaceRegex!);
   }
 }
 
@@ -201,11 +190,5 @@ FutureOr<String?> parseNextPage(
               .toString();
         }) ??
         "";
-  } else {
-    developer.log('解析下一页的链接 rule->$next');
-    var parser = HParser(html);
-    var result = parser.parseRuleStrings(next);
-    parser.destory();
-    return result.isNotEmpty ? result[0] : "";
   }
 }

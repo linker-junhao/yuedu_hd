@@ -46,7 +46,7 @@ dependencies:
   # toast
   bot_toast: ^4.0.1
   # 颜色选择
-  flutter_colorpicker: ^0.6.0
+  flutter_colorpicker: ^1.1.0
   #gbk
   fast_gbk: ^1.0.0-rc
   #isolate
@@ -60,6 +60,7 @@ dependencies:
 
   sqflite_common_ffi: any
   json_path: ^0.7.4
+  sqflite_common_ffi_web: ^0.4.2+3
 flutter:
 
   # The following line ensures that the Material Icons font is

@@ -118,28 +118,34 @@ class _PageExploreState extends State<PageExplore>
         onRefresh: () async {
           this.loadTabBookList(_tabController?.index ?? 0, true);
         },
-        child: WheelScroll4Desktop(
-          scrollController: _scrollController,
-          child: MediaQuery.removePadding(
-            context: context,
-            removeTop: true,
-            child: ScrollConfiguration(
-              behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
-                PointerDeviceKind.touch,
-                PointerDeviceKind.mouse
-              }),
-              child: WaterfallFlow.builder(
-                physics: AlwaysScrollableScrollPhysics(),
-                controller: _scrollController,
-                gridDelegate:
-                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: isPortrait ? 1 : 2),
-                itemBuilder: (ctx, index) => _buildItem(ctx, books[index]),
-                itemCount: books.length,
-              ),
-            ),
-          ),
+        child: ListView.builder(
+          // Add a key to the ListView. This makes it possible to
+          // find the list and scroll through it in the tests.
+          itemCount: books.length,
+          itemBuilder: (ctx, index) => _buildItem(ctx, books[index]),
         ));
+        // child: WheelScroll4Desktop(
+        //   scrollController: _scrollController,
+        //   child: MediaQuery.removePadding(
+        //     context: context,
+        //     removeTop: true,
+        //     child: ScrollConfiguration(
+        //       behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
+        //         PointerDeviceKind.touch,
+        //         PointerDeviceKind.mouse
+        //       }),
+        //       child: WaterfallFlow.builder(
+        //         physics: AlwaysScrollableScrollPhysics(),
+        //         controller: _scrollController,
+        //         gridDelegate:
+        //             SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+        //                 crossAxisCount: isPortrait ? 1 : 2),
+        //         itemBuilder: (ctx, index) => _buildItem(ctx, books[index]),
+        //         itemCount: books.length,
+        //       ),
+        //     ),
+        //   ),
+        // ));
   }
 
   Widget _buildItem(BuildContext ctx, BookInfoBean infoBean) {
